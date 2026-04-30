@@ -138,10 +138,10 @@ const Cart = () => {
                   </div>
                 </div>
                 
-                <button className="btn-primary flex justify-center items-center gap-2">
+                <Link to="/checkout" className="btn-primary flex justify-center items-center gap-2">
                   <span>Checkout</span>
                   <ArrowRight className="w-5 h-5" />
-                </button>
+                </Link>
                 
                 <div className="mt-4 text-center">
                   <Link to="/products" className="text-sm text-white/50 hover:text-white transition-colors">
