@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { LogOut, User, ShoppingBag, Package, ShoppingCart } from 'lucide-react';
+import { LogOut, User, ShoppingBag, Package, ShoppingCart, Shield } from 'lucide-react';
 
 const Home = () => {
   const { user, logout } = useAuth();
@@ -20,6 +20,15 @@ const Home = () => {
         </div>
         
         <div className="flex items-center gap-6">
+          {user?.role === 'admin' && (
+            <Link 
+              to="/admin"
+              className="hidden md:flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors font-medium"
+            >
+              <Shield className="w-4 h-4" />
+              <span>Admin</span>
+            </Link>
+          )}
           <Link 
             to="/products"
             className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors"
