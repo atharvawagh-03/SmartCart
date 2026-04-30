@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Products from './pages/Products';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Component to handle redirecting authenticated users away from auth pages
@@ -46,6 +47,7 @@ function App() {
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
           </Route>
           
           {/* Catch all */}

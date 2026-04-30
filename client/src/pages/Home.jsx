@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User, ShoppingBag } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { LogOut, User, ShoppingBag, Package } from 'lucide-react';
 
 const Home = () => {
   const { user, logout } = useAuth();
@@ -17,6 +18,13 @@ const Home = () => {
         </div>
         
         <div className="flex items-center gap-6">
+          <Link 
+            to="/products"
+            className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+          >
+            <Package className="w-4 h-4" />
+            <span>Products</span>
+          </Link>
           <div className="hidden md:flex items-center gap-2 text-white/80">
             <User className="w-4 h-4" />
             <span>{user?.name}</span>
