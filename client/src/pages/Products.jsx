@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingBag, Search, Tag, DollarSign, Package } from 'lucide-react';
+import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [addingToCart, setAddingToCart] = useState({});
+  const { addToCart, cartCount } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,6 +27,20 @@ const Products = () => {
     fetchProducts();
   }, []);
 
+  const handleAddToCart = async (productId) => {
+    setAddingToCart(prev => ({ ...prev, [productId]: 'adding' }));
+    const success = await addToCart(productId, 1);
+    
+    if (success) {
+      setAddingToCart(prev => ({ ...prev, [productId]: 'success' }));
+      setTimeout(() => {
+        setAddingToCart(prev => ({ ...prev, [productId]: null }));
+      }, 2000);
+    } else {
+      setAddingToCart(prev => ({ ...prev, [productId]: null }));
+    }
+  };
+
   return (
     <div className="min-h-screen p-6 md:p-12 relative overflow-hidden">
       {/* Background decorations */}
@@ -30,6 +48,20 @@ const Products = () => {
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       
       <main className="max-w-7xl mx-auto z-10 relative">
+        <div className="flex justify-between items-center mb-6">
+          <Link to="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+            SmartCart
+          </Link>
+          <Link to="/cart" className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+            <ShoppingCart className="w-6 h-6 text-white" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+        </div>
+
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -113,9 +145,24 @@ const Products = () => {
                     </div>
                   </div>
                   
-                  <button className="w-full py-3 px-4 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 border border-white/10 hover:border-transparent transition-all duration-300 font-medium flex items-center justify-center gap-2 group/btn">
-                    <ShoppingBag className="w-4 h-4 group-hover/btn:animate-bounce" />
-                    <span>Add to Cart</span>
+                  <button 
+                    onClick={() => handleAddToCart(product._id)}
+                    disabled={addingToCart[product._id] === 'adding' || product.stock < 1}
+                    className="w-full py-3 px-4 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 border border-white/10 hover:border-transparent transition-all duration-300 font-medium flex items-center justify-center gap-2 group/btn disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {addingToCart[product._id] === 'adding' ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : addingToCart[product._id] === 'success' ? (
+                      <>
+                        <Check className="w-4 h-4 text-green-400" />
+                        <span>Added</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="w-4 h-4 group-hover/btn:animate-bounce" />
+                        <span>{product.stock < 1 ? 'Out of Stock' : 'Add to Cart'}</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

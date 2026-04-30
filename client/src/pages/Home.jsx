@@ -1,9 +1,11 @@
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { LogOut, User, ShoppingBag, Package } from 'lucide-react';
+import { LogOut, User, ShoppingBag, Package, ShoppingCart } from 'lucide-react';
 
 const Home = () => {
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
 
   return (
     <div className="min-h-screen p-6 md:p-12">
@@ -24,6 +26,18 @@ const Home = () => {
           >
             <Package className="w-4 h-4" />
             <span>Products</span>
+          </Link>
+          <Link 
+            to="/cart"
+            className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors relative"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            <span>Cart</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-3 bg-purple-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
           <div className="hidden md:flex items-center gap-2 text-white/80">
             <User className="w-4 h-4" />
