@@ -28,6 +28,12 @@ const Products = () => {
   }, []);
 
   const handleAddToCart = async (productId) => {
+    try {
+      await axios.post(`/api/products/${productId}/view`);
+    } catch (e) {
+      console.error(e);
+    }
+
     setAddingToCart(prev => ({ ...prev, [productId]: 'adding' }));
     const success = await addToCart(productId, 1);
     

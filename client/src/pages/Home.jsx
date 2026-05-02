@@ -2,6 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import { LogOut, User, ShoppingBag, Package, ShoppingCart, Shield } from 'lucide-react';
+import RecommendedProducts from '../components/RecommendedProducts';
 
 const Home = () => {
   const { user, logout } = useAuth();
@@ -83,6 +84,8 @@ const Home = () => {
               </div>
             </div>
           </div>
+          
+          <RecommendedProducts />
         </div>
       </main>
     </div>

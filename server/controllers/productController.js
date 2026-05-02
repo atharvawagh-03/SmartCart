@@ -80,9 +80,29 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
+// @desc    Track a product view
+// @route   POST /api/products/:id/view
+// @access  Public
+const trackProductView = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      product.views = (product.views || 0) + 1;
+      await product.save();
+      res.json({ message: "View tracked" });
+    } else {
+      res.status(404);
+      throw new Error("Product not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProducts,
   createProduct,
   updateProduct,
   deleteProduct,
+  trackProductView,
 };
