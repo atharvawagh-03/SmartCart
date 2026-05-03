@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Users, ShoppingBag, DollarSign, ArrowUpRight } from 'lucide-react';
+import { Users, ShoppingBag, DollarSign, ArrowUpRight, Package, Plus, Search, ExternalLink, Trash2, Edit2, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -19,6 +19,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview' or 'products'
   const [analytics, setAnalytics] = useState({
     totalUsers: 0,
     totalOrders: 0,
@@ -26,6 +27,17 @@ const AdminDashboard = () => {
     chartData: []
   });
   const [orders, setOrders] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    price: '',
+    category: '',
+    stock: '',
+    image: ''
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,13 +46,15 @@ const AdminDashboard = () => {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
-      const [analyticsRes, ordersRes] = await Promise.all([
+      const [analyticsRes, ordersRes, productsRes] = await Promise.all([
         axios.get('/api/admin/analytics', config),
-        axios.get('/api/admin/orders', config)
+        axios.get('/api/admin/orders', config),
+        axios.get('/api/products')
       ]);
       
       setAnalytics(analyticsRes.data);
       setOrders(ordersRes.data);
+      setAllProducts(productsRes.data);
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
       setError('Failed to load dashboard data');
@@ -68,6 +82,103 @@ const AdminDashboard = () => {
       alert('Failed to update status');
     }
   };
+
+  const handleBulkImport = async (source) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+
+      const mockDatasets = {
+        amazon: [
+          { name: "Echo Dot (4th Gen)", price: 49.99, category: "Electronics", stock: 100, image: "https://m.media-amazon.com/images/I/714B9B6y76L._AC_SL1500_.jpg" },
+          { name: "Kindle Paperwhite", price: 139.99, category: "Electronics", stock: 50, image: "https://m.media-amazon.com/images/I/61NbaFp4p+L._AC_SL1500_.jpg" }
+        ],
+        flipkart: [
+          { name: "Realme 9 Pro", price: 17999, category: "Mobile", stock: 30, image: "https://rukminim1.flixcart.com/image/416/416/l0r070w0/mobile/m/j/b/-original-imagcg22fz7yhw6v.jpeg" }
+        ],
+        myntra: [
+          { name: "Levis Men Jeans", price: 2999, category: "Fashion", stock: 120, image: "https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/15478224/2021/9/14/66848c0a-0158-47a3-8323-93881452654c1631626046045-Levis-Men-Jeans-1631626046045-1.jpg" }
+        ]
+      };
+
+      const productsToImport = mockDatasets[source];
+      await axios.post('/api/products/bulk', { products: productsToImport }, config);
+      
+      alert(`Successfully imported ${productsToImport.length} products from ${source}!`);
+      fetchDashboardData();
+    } catch (err) {
+      console.error('Failed to import products:', err);
+      alert('Failed to import products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProduct = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.delete(`/api/products/${id}`, config);
+      setAllProducts(allProducts.filter(p => p._id !== id));
+    } catch (err) {
+      alert("Failed to delete product");
+    }
+  };
+
+  const handleOpenModal = (product = null) => {
+    if (product) {
+      setEditingProduct(product);
+      setFormData({
+        name: product.name,
+        price: product.price,
+        category: product.category,
+        stock: product.stock,
+        image: product.image
+      });
+    } else {
+      setEditingProduct(null);
+      setFormData({
+        name: '',
+        price: '',
+        category: '',
+        stock: '',
+        image: ''
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSaveProduct = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+
+      if (editingProduct) {
+        await axios.put(`/api/products/${editingProduct._id}`, formData, config);
+        alert("Product updated successfully!");
+      } else {
+        await axios.post('/api/products', formData, config);
+        alert("Product created successfully!");
+      }
+
+      setIsModalOpen(false);
+      fetchDashboardData();
+    } catch (err) {
+      console.error('Failed to save product:', err);
+      alert('Failed to save product');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredProducts = allProducts.filter(p => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -107,15 +218,70 @@ const AdminDashboard = () => {
             </h1>
           </div>
           
-          <button 
-            onClick={fetchDashboardData}
-            className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all duration-300 font-medium text-sm"
-          >
-            Refresh Data
-          </button>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setActiveTab('overview')}
+              className={`px-6 py-3 rounded-2xl transition-all duration-300 font-medium text-sm flex items-center gap-2 ${
+                activeTab === 'overview' 
+                  ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/20' 
+                  : 'bg-white/5 hover:bg-white/10 text-white/60 border border-white/10'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              Overview
+            </button>
+            <button 
+              onClick={() => setActiveTab('products')}
+              className={`px-6 py-3 rounded-2xl transition-all duration-300 font-medium text-sm flex items-center gap-2 ${
+                activeTab === 'products' 
+                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
+                  : 'bg-white/5 hover:bg-white/10 text-white/60 border border-white/10'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              Products
+            </button>
+            <button 
+              onClick={fetchDashboardData}
+              className="p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all duration-300"
+            >
+              <ArrowUpRight className="w-4 h-4 rotate-45" />
+            </button>
+          </div>
         </div>
 
-        {/* Top Cards */}
+        {activeTab === 'overview' ? (
+          <>
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+              <button 
+                onClick={() => handleOpenModal()}
+                className="glass-panel p-6 rounded-3xl group flex items-center gap-4 hover:border-blue-500/50 transition-all duration-300"
+              >
+                <div className="p-3 bg-blue-500/10 rounded-2xl group-hover:bg-blue-500/20 transition-colors">
+                  <Plus className="w-6 h-6 text-blue-400" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-white">Add Product</h4>
+                  <p className="text-[10px] text-white/40 uppercase tracking-wider">Manual entry</p>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => setActiveTab('products')}
+                className="glass-panel p-6 rounded-3xl group flex items-center gap-4 hover:border-purple-500/50 transition-all duration-300"
+              >
+                <div className="p-3 bg-purple-500/10 rounded-2xl group-hover:bg-purple-500/20 transition-colors">
+                  <Download className="w-6 h-6 text-purple-400" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-white">Import Data</h4>
+                  <p className="text-[10px] text-white/40 uppercase tracking-wider">From external datasets</p>
+                </div>
+              </button>
+            </div>
+
+            {/* Top Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <div className="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:border-purple-500/30 transition-all duration-300">
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-[40px]" />
@@ -285,7 +451,245 @@ const AdminDashboard = () => {
             )}
           </div>
         </div>
+      </>
+        ) : (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Import Datasets Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="glass-panel p-6 rounded-3xl group hover:border-orange-500/30 transition-all duration-300">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-orange-500/10 rounded-2xl">
+                    <Download className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Amazon Dataset</h4>
+                    <p className="text-xs text-white/40">Import Echo, Kindle, FireTV</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleBulkImport('amazon')}
+                  className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-orange-500/20"
+                >
+                  Import Now
+                </button>
+              </div>
+
+              <div className="glass-panel p-6 rounded-3xl group hover:border-blue-500/30 transition-all duration-300">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-blue-500/10 rounded-2xl">
+                    <Download className="w-6 h-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Flipkart Dataset</h4>
+                    <p className="text-xs text-white/40">Import Realme, Poco devices</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleBulkImport('flipkart')}
+                  className="w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-blue-500/20"
+                >
+                  Import Now
+                </button>
+              </div>
+
+              <div className="glass-panel p-6 rounded-3xl group hover:border-pink-500/30 transition-all duration-300">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-pink-500/10 rounded-2xl">
+                    <Download className="w-6 h-6 text-pink-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Myntra Dataset</h4>
+                    <p className="text-xs text-white/40">Import Levis, Adidas fashion</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleBulkImport('myntra')}
+                  className="w-full py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-pink-500/20"
+                >
+                  Import Now
+                </button>
+              </div>
+
+              {/* Manual Add Card */}
+              <div className="glass-panel p-6 rounded-3xl group border-dashed border-2 border-white/10 hover:border-blue-500/50 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" onClick={() => handleOpenModal()}>
+                <div className="p-4 bg-blue-500/10 rounded-full mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Plus className="w-8 h-8 text-blue-400" />
+                </div>
+                <h4 className="font-semibold text-white">Add New Product</h4>
+                <p className="text-xs text-white/40 mt-1">Create a custom product manually</p>
+              </div>
+            </div>
+
+            {/* Products Table */}
+            <div className="glass-panel rounded-3xl overflow-hidden">
+              <div className="p-8 border-b border-white/5 flex justify-between items-center">
+                <h3 className="text-xl font-semibold">Inventory Management</h3>
+                <div className="flex gap-4">
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                    <input 
+                      type="text" 
+                      placeholder="Search inventory..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500/50"
+                    />
+                  </div>
+                  <button 
+                    onClick={() => handleOpenModal()}
+                    className="bg-white/5 hover:bg-white/10 border border-white/10 p-2 rounded-xl transition-all"
+                  >
+                    <Plus className="w-5 h-5 text-blue-400" />
+                  </button>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-white/40 text-xs uppercase tracking-wider">
+                      <th className="px-8 py-6 font-medium">Product</th>
+                      <th className="px-8 py-6 font-medium">Category</th>
+                      <th className="px-8 py-6 font-medium">Price</th>
+                      <th className="px-8 py-6 font-medium">Stock</th>
+                      <th className="px-8 py-6 font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {filteredProducts.map((product) => (
+                      <tr key={product._id} className="group hover:bg-white/5 transition-colors">
+                        <td className="px-8 py-6">
+                          <div className="flex items-center gap-4">
+                            <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover bg-white/5" />
+                            <span className="text-sm font-medium text-white">{product.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <span className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded-md">{product.category}</span>
+                        </td>
+                        <td className="px-8 py-6 text-sm font-semibold text-white">
+                          ${product.price.toFixed(2)}
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${product.stock > 10 ? 'bg-green-500' : 'bg-orange-500'}`} />
+                            <span className="text-sm text-white/80 font-medium">{product.stock} units</span>
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="flex items-center gap-3">
+                            <button 
+                              onClick={() => handleOpenModal(product)}
+                              className="p-2 hover:bg-blue-500/10 text-white/40 hover:text-blue-400 transition-all rounded-lg"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteProduct(product._id)}
+                              className="p-2 hover:bg-red-500/10 text-white/40 hover:text-red-400 transition-all rounded-lg"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <button className="p-2 hover:bg-white/10 text-white/40 hover:text-white transition-all rounded-lg">
+                              <ExternalLink className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
+
+      {/* Product Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
+          <div className="glass-panel w-full max-w-lg rounded-3xl p-8 relative z-10 animate-in zoom-in duration-300">
+            <h3 className="text-2xl font-bold mb-6">
+              {editingProduct ? 'Edit Product' : 'Add New Product'}
+            </h3>
+            
+            <form onSubmit={handleSaveProduct} className="space-y-4">
+              <div>
+                <label className="text-sm text-white/60 mb-2 block">Product Name</label>
+                <input 
+                  type="text" 
+                  required
+                  className="glass-input" 
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm text-white/60 mb-2 block">Price ($)</label>
+                  <input 
+                    type="number" 
+                    required
+                    step="0.01"
+                    className="glass-input" 
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-white/60 mb-2 block">Stock</label>
+                  <input 
+                    type="number" 
+                    required
+                    className="glass-input" 
+                    value={formData.stock}
+                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-sm text-white/60 mb-2 block">Category</label>
+                <input 
+                  type="text" 
+                  required
+                  className="glass-input" 
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm text-white/60 mb-2 block">Image URL</label>
+                <input 
+                  type="text" 
+                  required
+                  className="glass-input" 
+                  value={formData.image}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                />
+              </div>
+              
+              <div className="flex gap-4 pt-4">
+                <button 
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-medium transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="flex-1 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl font-medium shadow-lg shadow-blue-500/20 transition-all"
+                >
+                  {editingProduct ? 'Update Product' : 'Create Product'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

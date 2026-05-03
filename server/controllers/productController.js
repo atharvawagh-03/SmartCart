@@ -99,10 +99,30 @@ const trackProductView = async (req, res, next) => {
   }
 };
 
+// @desc    Bulk create products (for importing datasets)
+// @route   POST /api/products/bulk
+// @access  Private/Admin
+const bulkCreateProducts = async (req, res, next) => {
+  try {
+    const { products } = req.body;
+
+    if (!Array.isArray(products) || products.length === 0) {
+      res.status(400);
+      throw new Error("Invalid products array");
+    }
+
+    const createdProducts = await Product.insertMany(products);
+    res.status(201).json(createdProducts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProducts,
   createProduct,
   updateProduct,
   deleteProduct,
   trackProductView,
+  bulkCreateProducts,
 };

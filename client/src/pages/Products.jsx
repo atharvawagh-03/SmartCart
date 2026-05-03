@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check, Shield, Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const Products = () => {
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,21 +53,32 @@ const Products = () => {
     <div className="min-h-screen p-6 md:p-12 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       
       <main className="max-w-7xl mx-auto z-10 relative">
         <div className="flex justify-between items-center mb-6">
           <Link to="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
             SmartCart
           </Link>
-          <Link to="/cart" className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-            <ShoppingCart className="w-6 h-6 text-white" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
+          <div className="flex items-center gap-4">
+            {user?.role === 'admin' && (
+              <Link 
+                to="/admin"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-all font-medium text-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Product</span>
+              </Link>
             )}
-          </Link>
+            <Link to="/cart" className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+              <ShoppingCart className="w-6 h-6 text-white" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">

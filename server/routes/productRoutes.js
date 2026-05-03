@@ -6,9 +6,12 @@ const {
   updateProduct,
   deleteProduct,
   trackProductView,
+  bulkCreateProducts,
 } = require("../controllers/productController");
 
 const router = express.Router();
+
+router.route("/bulk").post(protect, admin, bulkCreateProducts);
 
 router.route("/")
   .get(getProducts)
