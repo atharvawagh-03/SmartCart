@@ -22,7 +22,7 @@ export const SocketProvider = ({ children }) => {
       newSocket.emit('join', user._id || user.id);
 
       // Join admin room if admin
-      if (user.isAdmin) {
+      if (user.role === 'admin') {
         newSocket.emit('joinAdmin');
       }
 

@@ -7,6 +7,7 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const { register, error, loading, setError } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -16,7 +17,7 @@ const Register = () => {
       return;
     }
     try {
-      await register(name, email, password);
+      await register(name, email, password, isAdmin ? 'admin' : 'user');
     } catch (err) {
       console.error("Registration failed:", err);
       // Error is handled in context
@@ -96,6 +97,13 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/30 transition-all duration-300 cursor-pointer" onClick={() => setIsAdmin(!isAdmin)}>
+              <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${isAdmin ? 'bg-purple-500 border-purple-500' : 'border-white/20'}`}>
+                {isAdmin && <div className="w-2 h-2 bg-white rounded-full" />}
+              </div>
+              <span className="text-sm font-medium text-white/80">Register as Administrator</span>
             </div>
 
             <button 
