@@ -60,6 +60,50 @@ const getDashboardAnalytics = async (req, res, next) => {
   }
 };
 
+// @desc    Update order status
+// @route   PUT /api/admin/orders/:id/status
+// @access  Private/Admin
+const updateOrderStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+
+    order.status = status;
+    const updatedOrder = await order.save();
+
+    // Notify the user via Socket.io
+    const io = req.app.get("io");
+    io.to(order.user.toString()).emit("orderStatusUpdated", {
+      orderId: order._id,
+      status: order.status,
+      message: `Your order #${order._id} is now ${order.status}`
+    });
+
+    res.json(updatedOrder);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all orders
+// @route   GET /api/admin/orders
+// @access  Private/Admin
+const getOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({}).populate("user", "name email").sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
-  getDashboardAnalytics
+  getDashboardAnalytics,
+  updateOrderStatus,
+  getOrders,
 };

@@ -25,27 +25,49 @@ const AdminDashboard = () => {
     totalRevenue: 0,
     chartData: []
   });
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-        
-        const { data } = await axios.get('/api/admin/analytics', config);
-        setAnalytics(data);
-      } catch (err) {
-        console.error('Failed to fetch analytics:', err);
-        setError('Failed to load dashboard data');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchDashboardData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      
+      const [analyticsRes, ordersRes] = await Promise.all([
+        axios.get('/api/admin/analytics', config),
+        axios.get('/api/admin/orders', config)
+      ]);
+      
+      setAnalytics(analyticsRes.data);
+      setOrders(ordersRes.data);
+    } catch (err) {
+      console.error('Failed to fetch dashboard data:', err);
+      setError('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchAnalytics();
+  useEffect(() => {
+    fetchDashboardData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      
+      await axios.put(`/api/admin/orders/${orderId}/status`, { status: newStatus }, config);
+      
+      // Update local state
+      setOrders(orders.map(order => order._id === orderId ? { ...order, status: newStatus } : order));
+    } catch (err) {
+      console.error('Failed to update status:', err);
+      alert('Failed to update status');
+    }
+  };
 
   if (loading) {
     return (
@@ -84,6 +106,13 @@ const AdminDashboard = () => {
               Dashboard <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Overview</span>
             </h1>
           </div>
+          
+          <button 
+            onClick={fetchDashboardData}
+            className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all duration-300 font-medium text-sm"
+          >
+            Refresh Data
+          </button>
         </div>
 
         {/* Top Cards */}
@@ -186,6 +215,74 @@ const AdminDashboard = () => {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* Recent Orders Section */}
+        <div className="glass-panel rounded-3xl overflow-hidden">
+          <div className="p-8 border-b border-white/5 flex justify-between items-center">
+            <h3 className="text-xl font-semibold">Recent Orders</h3>
+            <span className="text-xs font-medium text-white/40 bg-white/5 px-3 py-1 rounded-full">
+              Real-time updates active
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-white/40 text-xs uppercase tracking-wider">
+                  <th className="px-8 py-6 font-medium">Order ID</th>
+                  <th className="px-8 py-6 font-medium">Customer</th>
+                  <th className="px-8 py-6 font-medium">Amount</th>
+                  <th className="px-8 py-6 font-medium">Status</th>
+                  <th className="px-8 py-6 font-medium">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {orders.map((order) => (
+                  <tr key={order._id} className="group hover:bg-white/5 transition-colors">
+                    <td className="px-8 py-6 text-sm font-medium text-white/80">
+                      #{order._id.substring(0, 8)}...
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-white">{order.user?.name}</span>
+                        <span className="text-xs text-white/40">{order.user?.email}</span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-sm font-semibold text-white">
+                      ${order.totalPrice.toFixed(2)}
+                    </td>
+                    <td className="px-8 py-6">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        order.status === 'Delivered' ? 'bg-green-500/10 text-green-500' :
+                        order.status === 'Shipped' ? 'bg-blue-500/10 text-blue-500' :
+                        order.status === 'Processing' ? 'bg-yellow-500/10 text-yellow-500' :
+                        'bg-zinc-500/10 text-zinc-400'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-8 py-6">
+                      <select
+                        value={order.status}
+                        onChange={(e) => handleStatusUpdate(order._id, e.target.value)}
+                        className="bg-[#1a1b23] border border-white/10 rounded-lg text-xs p-2 text-white/80 focus:outline-none focus:border-purple-500/50"
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {orders.length === 0 && (
+              <div className="p-12 text-center text-white/40">
+                No orders found
+              </div>
+            )}
           </div>
         </div>
       </main>

@@ -22,6 +22,7 @@ const getRecommendations = async (req, res, next) => {
              }
           });
        });
+      }
     }
 
     // Determine the most frequently purchased category

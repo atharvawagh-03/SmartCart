@@ -37,6 +37,15 @@ const createOrder = async (req, res, next) => {
         { items: [] }
       );
 
+      // Notify admins via Socket.io
+      const io = req.app.get("io");
+      io.to("adminRoom").emit("newOrder", {
+        orderId: createdOrder._id,
+        user: req.user.name,
+        totalPrice: createdOrder.totalPrice,
+        message: `New order received from ${req.user.name}`
+      });
+
       res.status(201).json(createdOrder);
     }
   } catch (error) {

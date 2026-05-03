@@ -33,3 +33,21 @@
 .btn-primary {
   @apply w-full bg-gradient-to-r from-[#aa3bff] to-[#6d28d9] hover:from-[#912bd9] hover:to-[#5b21b6] text-white font-medium py-3 px-4 rounded-xl shadow-[0_0_15px_rgba(170,59,255,0.3)] hover:shadow-[0_0_25px_rgba(170,59,255,0.5)] transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0;
 }
+
+@keyframes progress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+.animate-progress {
+  animation: progress linear forwards;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-in {
+  animation: slide-in 0.3s ease-out;
+}
