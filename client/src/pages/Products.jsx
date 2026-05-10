@@ -11,6 +11,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [addingToCart, setAddingToCart] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const { addToCart, cartCount } = useCart();
 
   useEffect(() => {
@@ -48,6 +50,14 @@ const Products = () => {
       setAddingToCart(prev => ({ ...prev, [productId]: null }));
     }
   };
+
+  const categories = ['All', ...new Set(products.map(p => p.category))];
+
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen p-6 md:p-12 relative overflow-hidden">
@@ -97,11 +107,32 @@ const Products = () => {
             </div>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="glass-input pl-11 py-3 bg-white/5 border-white/10 rounded-2xl w-full"
               placeholder="Search products..."
             />
           </div>
         </div>
+
+        {/* Category Filter */}
+        {!loading && !error && products.length > 0 && (
+          <div className="flex gap-3 overflow-x-auto pb-4 mb-6 custom-scrollbar">
+            {categories.map(category => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-xl whitespace-nowrap transition-all duration-300 font-medium text-sm border ${
+                  selectedCategory === category
+                    ? 'bg-purple-500 text-white border-purple-500 shadow-lg shadow-purple-500/20'
+                    : 'bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -119,9 +150,23 @@ const Products = () => {
             <h3 className="text-2xl font-semibold mb-2">No products found</h3>
             <p className="text-white/50">Admin needs to add products to the inventory.</p>
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="glass-panel p-16 text-center rounded-3xl flex flex-col items-center justify-center border-white/10">
+            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+              <Search className="w-10 h-10 text-white/40" />
+            </div>
+            <h3 className="text-2xl font-semibold mb-2">No results match your search</h3>
+            <p className="text-white/50">Try selecting a different category or adjusting your search term.</p>
+            <button 
+              onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+              className="mt-6 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors font-medium"
+            >
+              Clear Filters
+            </button>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div 
                 key={product._id} 
                 className="glass-panel rounded-3xl overflow-hidden group hover:border-purple-500/30 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(170,59,255,0.1)] flex flex-col h-full"
