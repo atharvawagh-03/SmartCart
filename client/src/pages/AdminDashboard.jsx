@@ -559,7 +559,7 @@ const AdminDashboard = () => {
                       <tr key={product._id} className="group hover:bg-white/5 transition-colors">
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-4">
-                            <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover bg-white/5" />
+                            <img src={product.image} alt={product.name} referrerPolicy="no-referrer" className="w-10 h-10 rounded-lg object-contain bg-white/5" />
                             <span className="text-sm font-medium text-white">{product.name}</span>
                           </div>
                         </td>

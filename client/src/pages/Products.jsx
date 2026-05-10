@@ -134,7 +134,8 @@ const Products = () => {
                   <img 
                     src={product.image || "https://placehold.co/600x400/1a1a2e/ffffff?text=No+Image"} 
                     alt={product.name} 
-                    className="w-full h-full object-cover relative z-10 transition-transform duration-500 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain relative z-10 transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Image+Not+Found";

@@ -115,7 +115,7 @@ const Checkout = () => {
                   <div key={item.product._id} className="flex gap-4 items-center bg-white/5 p-3 rounded-2xl">
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-white/10 flex-shrink-0">
                       {item.product.image ? (
-                        <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                        <img src={item.product.image} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <Package className="w-6 h-6 text-white/30" />

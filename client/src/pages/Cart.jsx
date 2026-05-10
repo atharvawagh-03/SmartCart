@@ -58,7 +58,7 @@ const Cart = () => {
                   <div key={item._id || item.product._id} className="glass-panel p-4 md:p-6 rounded-3xl flex flex-col sm:flex-row items-center gap-6 group hover:border-purple-500/30 transition-all duration-300">
                     <div className="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-white/5 flex-shrink-0 relative">
                       {item.product.image ? (
-                        <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                        <img src={item.product.image} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <ShoppingBag className="w-8 h-8 text-white/20" />
