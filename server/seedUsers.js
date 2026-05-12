@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const User = require("./models/User");
 require("dotenv").config();
 
@@ -22,32 +21,23 @@ const seedUsers = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
-    let added = 0;
-    let skipped = 0;
+    // Delete existing seeded users first so we can re-insert with correct hashing
+    const emails = users.map((u) => u.email);
+    await User.deleteMany({ email: { $in: emails } });
+    console.log("🗑️  Cleared previous entries for these users\n");
 
     for (const u of users) {
-      const existing = await User.findOne({ email: u.email });
-      if (existing) {
-        console.log(`⚠️  Skipped (already exists): ${u.email}`);
-        skipped++;
-        continue;
-      }
-
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(u.password, salt);
-
+      // Pass plain-text password — the User pre-save hook will hash it once
       await User.create({
         name: u.name,
         email: u.email,
-        password: hashedPassword,
+        password: u.password,
         role: "user",
       });
-
       console.log(`✅ Added: ${u.name} (${u.email})`);
-      added++;
     }
 
-    console.log(`\n🎉 Done! ${added} user(s) added, ${skipped} skipped.`);
+    console.log(`\n🎉 Done! All ${users.length} users seeded successfully.`);
     process.exit(0);
   } catch (err) {
     console.error("❌ Error seeding users:", err.message);
