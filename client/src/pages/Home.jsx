@@ -1,8 +1,9 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { LogOut, User, ShoppingBag, Package, ShoppingCart, Shield } from 'lucide-react';
+import { ShoppingBag, Package, ShoppingCart, Shield } from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
+import UserMenu from '../components/UserMenu';
 
 const Home = () => {
   const { user, logout } = useAuth();

@@ -7,6 +7,11 @@ import Products from './pages/Products';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import AdminDashboard from './pages/AdminDashboard';
+import Profile from './pages/Profile';
+import MyOrders from './pages/MyOrders';
+import RecentSearches from './pages/RecentSearches';
+import Wishlist from './pages/Wishlist';
+import Settings from './pages/Settings';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import { CartProvider } from './context/CartContext';
@@ -60,6 +65,11 @@ function App() {
                 <Route path="/products" element={<Products />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/orders" element={<MyOrders />} />
+                <Route path="/recent-searches" element={<RecentSearches />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
 
               {/* Admin Routes */}
