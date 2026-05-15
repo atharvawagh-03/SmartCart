@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Settings, Bell, Shield, Lock, Globe, Moon, Sun, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Settings as SettingsIcon, Bell, Shield, Lock, Globe, Moon, Sun, ChevronRight } from 'lucide-react';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
@@ -53,7 +53,7 @@ const Settings = () => {
           <div className="relative">
             <div className="flex items-center gap-3 mb-8">
               <div className="p-3 rounded-xl bg-purple-500/20">
-                <Settings className="w-6 h-6 text-purple-400" />
+                <SettingsIcon className="w-6 h-6 text-purple-400" />
               </div>
               <h1 className="text-3xl font-bold">Settings</h1>
             </div>
