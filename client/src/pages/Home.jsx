@@ -6,7 +6,7 @@ import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
 const Home = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { cartCount } = useCart();
 
   return (
@@ -50,17 +50,7 @@ const Home = () => {
               </span>
             )}
           </Link>
-          <div className="hidden md:flex items-center gap-2 text-white/80">
-            <User className="w-4 h-4" />
-            <span>{user?.name}</span>
-          </div>
-          <button 
-            onClick={logout}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-red-400 hover:text-red-300"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="text-sm font-medium">Logout</span>
-          </button>
+          <UserMenu />
         </div>
       </nav>
 
