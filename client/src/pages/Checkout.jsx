@@ -68,11 +68,11 @@ const Checkout = () => {
             Thank you for your purchase. Your order has been placed successfully and is now being processed.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/products" className="btn-primary" onClick={() => clearCart()}>
-              Continue Shopping
+            <Link to="/orders" className="btn-primary" onClick={() => clearCart()}>
+              View My Orders
             </Link>
-            <Link to="/" className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors font-medium" onClick={() => clearCart()}>
-              Go to Dashboard
+            <Link to="/products" className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors font-medium" onClick={() => clearCart()}>
+              Continue Shopping
             </Link>
           </div>
         </div>

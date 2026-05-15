@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Package, ShoppingCart, Shield } from 'lucide-react';
+import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList } from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
@@ -39,6 +39,13 @@ const Home = () => {
             <span>Products</span>
           </Link>
           <Link 
+            to="/orders"
+            className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+          >
+            <ClipboardList className="w-4 h-4" />
+            <span>My Orders</span>
+          </Link>
+          <Link 
             to="/cart"
             className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors relative"
           >
@@ -65,8 +72,16 @@ const Home = () => {
             You have successfully authenticated into your dashboard. Your JWT token is securely stored and managed via context.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-black/20 border border-white/10 rounded-2xl p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Link
+              to="/orders"
+              className="bg-black/20 border border-white/10 rounded-2xl p-6 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all group"
+            >
+              <ClipboardList className="w-8 h-8 text-purple-400 mb-3 group-hover:scale-110 transition-transform" />
+              <h3 className="text-lg font-medium mb-2 text-purple-400">My Orders</h3>
+              <p className="text-sm text-white/60">Track active orders and view your purchase history</p>
+            </Link>
+            <div className="bg-black/20 border border-white/10 rounded-2xl p-6 md:col-span-2">
               <h3 className="text-lg font-medium mb-2 text-purple-400">Your Profile</h3>
               <div className="space-y-2 text-sm text-white/70">
                 <p><strong>Name:</strong> {user?.name}</p>

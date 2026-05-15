@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check, Shield, Plus } from 'lucide-react';
+import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check, Shield, Plus, ClipboardList } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const Products = () => {
@@ -80,6 +80,13 @@ const Products = () => {
                 <span>Add Product</span>
               </Link>
             )}
+            <Link
+              to="/orders"
+              className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white text-sm transition-colors"
+            >
+              <ClipboardList className="w-4 h-4" />
+              <span>My Orders</span>
+            </Link>
             <Link to="/cart" className="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
               <ShoppingCart className="w-6 h-6 text-white" />
               {cartCount > 0 && (

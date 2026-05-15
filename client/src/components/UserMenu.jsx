@@ -21,7 +21,7 @@ const UserMenu = () => {
 
   const menuItems = [
     { icon: User, label: 'Profile', path: '/profile', description: 'View and edit your profile' },
-    { icon: Package, label: 'My Orders', path: '/orders', description: 'Track your orders' },
+    { icon: Package, label: 'My Orders', path: '/orders', description: 'Track current & past orders' },
     { icon: Clock, label: 'Recent Searches', path: '/recent-searches', description: 'View your search history' },
     { icon: Heart, label: 'Wishlist', path: '/wishlist', description: 'Your saved items' },
     { icon: Settings, label: 'Settings', path: '/settings', description: 'Account settings' },
