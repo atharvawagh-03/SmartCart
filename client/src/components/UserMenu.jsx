@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { User, LogOut, Package, Heart, Clock, Settings, ChevronDown, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -6,18 +7,45 @@ import { useAuth } from '../context/AuthContext';
 const UserMenu = () => {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
+  const triggerRef = useRef(null);
+
+  const updateMenuPosition = () => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    setMenuPosition({
+      top: rect.bottom + 8,
+      right: window.innerWidth - rect.right,
+    });
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsOpen(false);
+      if (triggerRef.current && !triggerRef.current.contains(event.target)) {
+        const menu = document.getElementById('user-menu-dropdown');
+        if (menu && !menu.contains(event.target)) {
+          setIsOpen(false);
+        }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('resize', updateMenuPosition);
+      window.addEventListener('scroll', updateMenuPosition, true);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('scroll', updateMenuPosition, true);
+    };
+  }, [isOpen]);
+
+  const handleToggle = () => {
+    if (!isOpen) updateMenuPosition();
+    setIsOpen((prev) => !prev);
+  };
 
   const menuItems = [
     { icon: User, label: 'Profile', path: '/profile', description: 'View and edit your profile' },
@@ -27,24 +55,19 @@ const UserMenu = () => {
     { icon: Settings, label: 'Settings', path: '/settings', description: 'Account settings' },
   ];
 
-  return (
-    <div className="relative" ref={menuRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-      >
-        <User className="w-4 h-4 text-white/80" />
-        <span className="text-sm font-medium text-white/80">{user?.name}</span>
-        <ChevronDown className={`w-4 h-4 text-white/60 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-
-      {isOpen && (
+  const dropdown = isOpen
+    ? createPortal(
         <>
-          <div 
-            className="fixed inset-0 z-40"
+          <div
+            className="fixed inset-0 z-[200]"
             onClick={() => setIsOpen(false)}
+            aria-hidden="true"
           />
-          <div className="absolute right-0 top-full mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden">
+          <div
+            id="user-menu-dropdown"
+            className="fixed z-[201] w-72 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+            style={{ top: menuPosition.top, right: menuPosition.right }}
+          >
             <div className="p-4 border-b border-white/10">
               <div className="flex items-center justify-between">
                 <div>
@@ -52,6 +75,7 @@ const UserMenu = () => {
                   <p className="text-xs text-white/60">{user?.email}</p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="p-1 hover:bg-white/10 rounded-lg transition-colors"
                 >
@@ -83,6 +107,7 @@ const UserMenu = () => {
 
             <div className="p-2 border-t border-white/10">
               <button
+                type="button"
                 onClick={() => {
                   logout();
                   setIsOpen(false);
@@ -101,9 +126,28 @@ const UserMenu = () => {
               </button>
             </div>
           </div>
-        </>
-      )}
-    </div>
+        </>,
+        document.body
+      )
+    : null;
+
+  return (
+    <>
+      <div className="relative z-50" ref={triggerRef}>
+        <button
+          type="button"
+          onClick={handleToggle}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+          aria-expanded={isOpen}
+          aria-haspopup="true"
+        >
+          <User className="w-4 h-4 text-white/80" />
+          <span className="text-sm font-medium text-white/80">{user?.name}</span>
+          <ChevronDown className={`w-4 h-4 text-white/60 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+      </div>
+      {dropdown}
+    </>
   );
 };
 

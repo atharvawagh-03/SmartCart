@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen p-6 md:p-12">
-      <nav className="flex justify-between items-center mb-12 glass-panel rounded-2xl p-4 px-6 max-w-6xl mx-auto">
+      <nav className="relative z-50 flex justify-between items-center mb-12 glass-panel rounded-2xl p-4 px-6 max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
             <ShoppingBag className="text-white w-5 h-5" />
