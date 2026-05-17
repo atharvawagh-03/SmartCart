@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import { CartProvider } from './context/CartContext';
 import { SocketProvider } from './context/SocketContext';
+import { ThemeProvider } from './context/ThemeContext';
 import NotificationToast from './components/NotificationToast';
 
 // Component to handle redirecting authenticated users away from auth pages
@@ -36,6 +37,7 @@ const PublicRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
           <CartProvider>
@@ -83,6 +85,7 @@ function App() {
           </CartProvider>
         </SocketProvider>
       </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

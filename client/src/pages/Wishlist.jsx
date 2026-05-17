@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Trash2, ShoppingCart, Package } from 'lucide-react';
+import { formatCurrency } from '../utils/currency';
 
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([
@@ -72,7 +73,7 @@ const Wishlist = () => {
                     <h3 className="text-white font-medium mb-2">{item.name}</h3>
                     
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-xl font-bold text-purple-400">₹{item.price.toLocaleString()}</span>
+                      <span className="text-xl font-bold text-purple-400">{formatCurrency(item.price)}</span>
                       <span className={`text-xs px-2 py-1 rounded-full ${item.inStock ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                         {item.inStock ? 'In Stock' : 'Out of Stock'}
                       </span>

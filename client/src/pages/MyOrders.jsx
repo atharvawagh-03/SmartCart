@@ -13,6 +13,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
+import { formatCurrency } from '../utils/currency';
 
 const TRACKING_STEPS = ['Pending', 'Processing', 'Shipped', 'Delivered'];
 
@@ -154,7 +155,7 @@ const MyOrders = () => {
             >
               {order.status}
             </span>
-            <span className="text-white font-medium">${order.totalPrice?.toFixed(2)}</span>
+            <span className="text-white font-medium">{formatCurrency(order.totalPrice)}</span>
           </div>
         </div>
 
@@ -166,7 +167,7 @@ const MyOrders = () => {
                   {item.name} × {item.quantity}
                 </span>
                 <span className="text-white/60 shrink-0">
-                  ${((item.price || 0) * item.quantity).toFixed(2)}
+                  {formatCurrency((item.price || 0) * item.quantity)}
                 </span>
               </div>
             ))}

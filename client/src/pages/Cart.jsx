@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { formatCurrency } from '../utils/currency';
 
 const Cart = () => {
   const { cart, loading, updateQuantity, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
@@ -73,7 +74,7 @@ const Cart = () => {
                         </h3>
                         <p className="text-white/50 text-sm mb-3">{item.product.category}</p>
                         <p className="font-medium text-lg text-white">
-                          ${item.product.price?.toFixed(2) || "0.00"}
+                          {formatCurrency(item.product.price)}
                         </p>
                       </div>
                       
@@ -117,7 +118,7 @@ const Cart = () => {
                 <div className="space-y-4 mb-6 text-white/80">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(cartTotal)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
@@ -125,7 +126,7 @@ const Cart = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Tax</span>
-                    <span>$0.00</span>
+                    <span>{formatCurrency(0)}</span>
                   </div>
                 </div>
                 
@@ -133,7 +134,7 @@ const Cart = () => {
                   <div className="flex justify-between items-center text-lg">
                     <span className="font-bold">Total</span>
                     <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 text-2xl">
-                      ${cartTotal.toFixed(2)}
+                      {formatCurrency(cartTotal)}
                     </span>
                   </div>
                 </div>

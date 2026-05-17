@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Settings as SettingsIcon, Bell, Shield, Lock, Globe, Moon, Sun, ChevronRight } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
   const [emailUpdates, setEmailUpdates] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
+  const { isDark, toggleTheme } = useTheme();
 
   const settingsSections = [
     {
@@ -21,17 +22,23 @@ const Settings = () => {
       title: 'Notifications',
       icon: Bell,
       items: [
-        { label: 'Push Notifications', description: 'Receive push notifications', toggle: notifications, onToggle: setNotifications },
-        { label: 'Email Updates', description: 'Receive email updates', toggle: emailUpdates, onToggle: setEmailUpdates },
+        { label: 'Push Notifications', description: 'Receive push notifications', toggle: notifications, onToggle: () => setNotifications((n) => !n) },
+        { label: 'Email Updates', description: 'Receive email updates', toggle: emailUpdates, onToggle: () => setEmailUpdates((n) => !n) },
       ]
     },
     {
       title: 'Preferences',
       icon: Globe,
       items: [
-        { label: 'Dark Mode', description: 'Toggle dark mode theme', toggle: darkMode, onToggle: setDarkMode },
-        { label: 'Language', description: 'English (US)', icon: Globe },
-        { label: 'Currency', description: 'Indian Rupee (₹)', icon: Globe },
+        {
+          label: 'Dark Mode',
+          description: isDark ? 'Dark theme enabled' : 'Light theme enabled',
+          icon: isDark ? Moon : Sun,
+          toggle: isDark,
+          onToggle: toggleTheme,
+        },
+        { label: 'Language', description: 'English (India)', icon: Globe },
+        { label: 'Currency', description: 'Indian Rupee (₹)', icon: Globe, static: true },
       ]
     }
   ];
@@ -90,7 +97,9 @@ const Settings = () => {
                           
                           {item.toggle !== undefined ? (
                             <button
-                              onClick={() => item.onToggle(!item.toggle)}
+                              type="button"
+                              onClick={() => item.onToggle()}
+                              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
                               className={`relative w-12 h-6 rounded-full transition-colors ${
                                 item.toggle ? 'bg-purple-500' : 'bg-white/10'
                               }`}
@@ -101,6 +110,8 @@ const Settings = () => {
                                 }`}
                               />
                             </button>
+                          ) : item.static ? (
+                            <span className="text-sm font-medium text-purple-400">₹ INR</span>
                           ) : (
                             <ChevronRight className="w-5 h-5 text-white/40" />
                           )}

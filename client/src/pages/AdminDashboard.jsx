@@ -3,6 +3,7 @@ import axios from 'axios';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, ShoppingBag, DollarSign, ArrowUpRight, Package, Plus, Search, ExternalLink, Trash2, Edit2, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { formatCurrency, formatCurrencyCompact } from '../utils/currency';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -10,7 +11,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="bg-[#16171d] border border-white/10 p-4 rounded-xl shadow-xl">
         <p className="text-white/60 mb-2">{label}</p>
         <p className="font-semibold text-purple-400">
-          Revenue: ${payload[0].value.toFixed(2)}
+          Revenue: {formatCurrency(payload[0].value)}
         </p>
       </div>
     );
@@ -330,7 +331,7 @@ const AdminDashboard = () => {
             </div>
             <div className="relative z-10">
               <p className="text-white/60 mb-1 font-medium text-sm">Total Revenue</p>
-              <h3 className="text-4xl font-bold">${analytics.totalRevenue.toFixed(2)}</h3>
+              <h3 className="text-4xl font-bold">{formatCurrency(analytics.totalRevenue)}</h3>
             </div>
           </div>
         </div>
@@ -345,7 +346,7 @@ const AdminDashboard = () => {
                   <LineChart data={analytics.chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.4)" axisLine={false} tickLine={false} />
-                    <YAxis stroke="rgba(255,255,255,0.4)" axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
+                    <YAxis stroke="rgba(255,255,255,0.4)" axisLine={false} tickLine={false} tickFormatter={(value) => formatCurrencyCompact(value)} />
                     <Tooltip content={<CustomTooltip />} />
                     <Line type="monotone" dataKey="revenue" stroke="#aa3bff" strokeWidth={4} dot={{ r: 4, fill: '#aa3bff', strokeWidth: 0 }} activeDot={{ r: 8, fill: '#aa3bff', strokeWidth: 0 }} />
                   </LineChart>
@@ -416,7 +417,7 @@ const AdminDashboard = () => {
                       </div>
                     </td>
                     <td className="px-8 py-6 text-sm font-semibold text-white">
-                      ${order.totalPrice.toFixed(2)}
+                      {formatCurrency(order.totalPrice)}
                     </td>
                     <td className="px-8 py-6">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
@@ -567,7 +568,7 @@ const AdminDashboard = () => {
                           <span className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded-md">{product.category}</span>
                         </td>
                         <td className="px-8 py-6 text-sm font-semibold text-white">
-                          ${product.price.toFixed(2)}
+                          {formatCurrency(product.price)}
                         </td>
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-2">
@@ -627,7 +628,7 @@ const AdminDashboard = () => {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-white/60 mb-2 block">Price ($)</label>
+                  <label className="text-sm text-white/60 mb-2 block">Price (₹)</label>
                   <input 
                     type="number" 
                     required

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
 @theme {
   --color-primary: #aa3bff;
   --color-primary-hover: #912bd9;
@@ -11,23 +14,65 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+[data-theme="light"] {
+  --color-background: #f4f2f9;
+  --color-surface: rgba(255, 255, 255, 0.92);
+  --color-surface-hover: rgba(0, 0, 0, 0.04);
+  --color-border: rgba(0, 0, 0, 0.08);
+}
+
 @layer base {
   body {
-    @apply bg-background text-white font-sans antialiased;
+    @apply bg-background font-sans antialiased;
+    color: #ffffff;
     background-image: 
       radial-gradient(circle at 15% 50%, rgba(170, 59, 255, 0.08), transparent 25%),
       radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
     background-attachment: fixed;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  [data-theme="light"] body {
+    color: #1a1625;
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(170, 59, 255, 0.06), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.05), transparent 25%);
   }
 }
+
+/* Light mode: remap common text utilities */
+[data-theme="light"] .text-white { color: #1a1625; }
+[data-theme="light"] .text-white\/90 { color: rgba(26, 22, 37, 0.9); }
+[data-theme="light"] .text-white\/80 { color: rgba(26, 22, 37, 0.8); }
+[data-theme="light"] .text-white\/70 { color: rgba(26, 22, 37, 0.7); }
+[data-theme="light"] .text-white\/60 { color: rgba(26, 22, 37, 0.6); }
+[data-theme="light"] .text-white\/50 { color: rgba(26, 22, 37, 0.5); }
+[data-theme="light"] .text-white\/40 { color: rgba(26, 22, 37, 0.4); }
+[data-theme="light"] .text-white\/30 { color: rgba(26, 22, 37, 0.3); }
+[data-theme="light"] .text-white\/20 { color: rgba(26, 22, 37, 0.2); }
+[data-theme="light"] .text-white\/10 { color: rgba(26, 22, 37, 0.1); }
+
+[data-theme="light"] .bg-black\/20 { background-color: rgba(0, 0, 0, 0.04); }
+[data-theme="light"] .bg-black\/30 { background-color: rgba(0, 0, 0, 0.06); }
+[data-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04); }
+[data-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.06); }
+[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.08); }
+[data-theme="light"] .border-white\/20 { border-color: rgba(0, 0, 0, 0.12); }
+[data-theme="light"] .hover\:bg-white\/5:hover { background-color: rgba(0, 0, 0, 0.04); }
+[data-theme="light"] .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.06); }
 
 /* Glassmorphism utilities */
 .glass-panel {
   @apply bg-surface backdrop-blur-xl border border-border shadow-2xl;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-input {
   @apply bg-black/20 border border-white/10 rounded-xl pr-4 pl-11 py-3 w-full text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300;
+}
+
+[data-theme="light"] .glass-input {
+  @apply bg-white border-gray-200 text-gray-900 placeholder-gray-400;
 }
 
 .btn-primary {

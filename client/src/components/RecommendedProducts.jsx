@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ShoppingBag, Tag, DollarSign, Package, Check, Sparkles } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { formatCurrency } from '../utils/currency';
 
 const RecommendedProducts = () => {
   const [recommendations, setRecommendations] = useState([]);
@@ -117,7 +118,7 @@ const RecommendedProducts = () => {
               <div className="flex items-center gap-4 text-white/60 text-xs mb-4 mt-auto">
                 <div className="flex items-center gap-1">
                   <DollarSign className="w-3 h-3 text-green-400" />
-                  <span className="font-medium text-white">${product.price.toFixed(2)}</span>
+                  <span className="font-medium text-white">{formatCurrency(product.price)}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Package className="w-3 h-3 text-blue-400" />

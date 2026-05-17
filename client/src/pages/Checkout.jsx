@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { CheckCircle, AlertCircle, ArrowLeft, Package, CreditCard } from 'lucide-react';
+import { formatCurrency } from '../utils/currency';
 
 const Checkout = () => {
   const { cart, cartTotal, clearCart } = useCart();
@@ -127,7 +128,7 @@ const Checkout = () => {
                       <p className="text-white/50 text-xs mt-1">Qty: {item.quantity}</p>
                     </div>
                     <div className="font-medium">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      {formatCurrency(item.product.price * item.quantity)}
                     </div>
                   </div>
                 ))}
@@ -149,7 +150,7 @@ const Checkout = () => {
               <div className="space-y-4 mb-6 text-white/80">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                  <span className="font-medium">{formatCurrency(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
@@ -161,7 +162,7 @@ const Checkout = () => {
                 <div className="flex justify-between items-center text-lg">
                   <span className="font-bold">Total</span>
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 text-3xl">
-                    ${cartTotal.toFixed(2)}
+                    {formatCurrency(cartTotal)}
                   </span>
                 </div>
               </div>

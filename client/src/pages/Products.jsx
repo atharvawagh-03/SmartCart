@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check, Shield, Plus, ClipboardList } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { formatCurrency } from '../utils/currency';
 
 const Products = () => {
   const { user } = useAuth();
@@ -209,7 +210,7 @@ const Products = () => {
                   <div className="flex items-center gap-4 text-white/60 text-sm mb-6 mt-auto">
                     <div className="flex items-center gap-1.5">
                       <DollarSign className="w-4 h-4 text-green-400" />
-                      <span className="font-medium text-white">${product.price.toFixed(2)}</span>
+                      <span className="font-medium text-white">{formatCurrency(product.price)}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Package className="w-4 h-4 text-blue-400" />
