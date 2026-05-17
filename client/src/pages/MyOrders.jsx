@@ -11,9 +11,11 @@ import {
   ChevronDown,
   ChevronUp,
   RefreshCw,
+  MapPin,
 } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
 import { formatCurrency } from '../utils/currency';
+import { formatAddressLines } from '../utils/address';
 
 const TRACKING_STEPS = ['Pending', 'Processing', 'Shipped', 'Delivered'];
 
@@ -174,7 +176,24 @@ const MyOrders = () => {
           </div>
         </div>
 
-        {isExpanded && <OrderTracker status={order.status} />}
+        {isExpanded && (
+          <>
+            {order.shippingAddress?.addressLine1 && (
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2 flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5" />
+                  Delivery address
+                </p>
+                <div className="text-sm text-white/70 space-y-0.5">
+                  {formatAddressLines(order.shippingAddress).map((line, i) => (
+                    <p key={i}>{line}</p>
+                  ))}
+                </div>
+              </div>
+            )}
+            <OrderTracker status={order.status} />
+          </>
+        )}
 
         <div className="mt-4 flex items-center gap-3">
           <button

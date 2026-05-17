@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { addressSchema } = require("./addressSchema");
 
 const userSchema = mongoose.Schema(
   {
@@ -21,6 +22,7 @@ const userSchema = mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    shippingAddress: addressSchema,
   },
   {
     timestamps: true,

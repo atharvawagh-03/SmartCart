@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { addressSchema } = require("./addressSchema");
 
 const orderSchema = mongoose.Schema(
   {
@@ -30,6 +31,10 @@ const orderSchema = mongoose.Schema(
       required: true,
       enum: ["Pending", "Processing", "Shipped", "Delivered"],
       default: "Pending",
+    },
+    shippingAddress: {
+      type: addressSchema,
+      required: true,
     },
   },
   {

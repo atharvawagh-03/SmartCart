@@ -399,6 +399,7 @@ const AdminDashboard = () => {
                 <tr className="text-white/40 text-xs uppercase tracking-wider">
                   <th className="px-8 py-6 font-medium">Order ID</th>
                   <th className="px-8 py-6 font-medium">Customer</th>
+                  <th className="px-8 py-6 font-medium">Ship to</th>
                   <th className="px-8 py-6 font-medium">Amount</th>
                   <th className="px-8 py-6 font-medium">Status</th>
                   <th className="px-8 py-6 font-medium">Action</th>
@@ -415,6 +416,17 @@ const AdminDashboard = () => {
                         <span className="text-sm font-medium text-white">{order.user?.name}</span>
                         <span className="text-xs text-white/40">{order.user?.email}</span>
                       </div>
+                    </td>
+                    <td className="px-8 py-6 text-sm text-white/70 max-w-[200px]">
+                      {order.shippingAddress ? (
+                        <div className="line-clamp-2">
+                          <span className="text-white/90">{order.shippingAddress.city}</span>
+                          <span className="text-white/40"> · {order.shippingAddress.pincode}</span>
+                          <p className="text-xs text-white/40 mt-0.5 truncate">{order.shippingAddress.addressLine1}</p>
+                        </div>
+                      ) : (
+                        <span className="text-white/30">—</span>
+                      )}
                     </td>
                     <td className="px-8 py-6 text-sm font-semibold text-white">
                       {formatCurrency(order.totalPrice)}
