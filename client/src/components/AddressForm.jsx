@@ -48,9 +48,9 @@ const AddressForm = ({ address, onChange, disabled = false }) => {
             className={inputClass(true)}
             placeholder="10-digit mobile"
             value={address.phone}
-            onChange={(e) => set('phone', e.target.value)}
+            onChange={(e) => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
             disabled={disabled}
-            maxLength={14}
+            maxLength={10}
           />
         </Field>
       </div>
