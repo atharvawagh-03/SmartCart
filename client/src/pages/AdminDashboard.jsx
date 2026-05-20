@@ -100,6 +100,13 @@ const AdminDashboard = () => {
         ],
         myntra: [
           { name: "Levis Men Jeans", price: 2999, category: "Fashion", stock: 120, image: "https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/15478224/2021/9/14/66848c0a-0158-47a3-8323-93881452654c1631626046045-Levis-Men-Jeans-1631626046045-1.jpg" }
+        ],
+        ajio: [
+          { name: "Ajio Slim Fit Casual Shirt", price: 19.99, category: "Clothing", stock: 150, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&q=80" },
+          { name: "Ajio Women Floral Maxi Dress", price: 34.99, category: "Clothing", stock: 100, image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=400&q=80" },
+          { name: "Ajio Denim Jacket", price: 44.99, category: "Clothing", stock: 80, image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400&q=80" },
+          { name: "Ajio Women's Designer Kurta", price: 24.99, category: "Clothing", stock: 120, image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&q=80" },
+          { name: "Ajio Retro Unisex Sneakers", price: 39.99, category: "Footwear", stock: 60, image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=80" }
         ]
       };
 
@@ -468,7 +475,7 @@ const AdminDashboard = () => {
         ) : (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Import Datasets Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               <div className="glass-panel p-6 rounded-3xl group hover:border-orange-500/30 transition-all duration-300">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="p-3 bg-orange-500/10 rounded-2xl">
@@ -518,6 +525,24 @@ const AdminDashboard = () => {
                 <button 
                   onClick={() => handleBulkImport('myntra')}
                   className="w-full py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-pink-500/20"
+                >
+                  Import Now
+                </button>
+              </div>
+
+              <div className="glass-panel p-6 rounded-3xl group hover:border-indigo-500/30 transition-all duration-300">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 bg-indigo-500/10 rounded-2xl">
+                    <Download className="w-6 h-6 text-indigo-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Ajio Dataset</h4>
+                    <p className="text-xs text-white/40">Import Ajio trends & ethnic wear</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleBulkImport('ajio')}
+                  className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
                 >
                   Import Now
                 </button>
