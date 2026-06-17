@@ -241,7 +241,10 @@ const seedWomenProducts = async () => {
         skipped++;
         continue;
       }
-      await Product.create(p);
+      await Product.create({
+        ...p,
+        price: Math.round(p.price * 83)
+      });
       console.log(`✅ Added [${p.category}]: ${p.name}`);
       added++;
     }

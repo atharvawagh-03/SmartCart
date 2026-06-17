@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Users, ShoppingBag, DollarSign, ArrowUpRight, Package, Plus, Search, ExternalLink, Trash2, Edit2, Download } from 'lucide-react';
+import { Users, ShoppingBag, IndianRupee, ArrowUpRight, Package, Plus, Search, ExternalLink, Trash2, Edit2, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatCurrency, formatCurrencyCompact } from '../utils/currency';
 
@@ -92,8 +92,8 @@ const AdminDashboard = () => {
 
       const mockDatasets = {
         amazon: [
-          { name: "Echo Dot (4th Gen)", price: 49.99, category: "Electronics", stock: 100, image: "https://m.media-amazon.com/images/I/714B9B6y76L._AC_SL1500_.jpg" },
-          { name: "Kindle Paperwhite", price: 139.99, category: "Electronics", stock: 50, image: "https://m.media-amazon.com/images/I/61NbaFp4p+L._AC_SL1500_.jpg" }
+          { name: "Echo Dot (4th Gen)", price: 4149, category: "Electronics", stock: 100, image: "https://m.media-amazon.com/images/I/714B9B6y76L._AC_SL1500_.jpg" },
+          { name: "Kindle Paperwhite", price: 11619, category: "Electronics", stock: 50, image: "https://m.media-amazon.com/images/I/61NbaFp4p+L._AC_SL1500_.jpg" }
         ],
         flipkart: [
           { name: "Realme 9 Pro", price: 17999, category: "Mobile", stock: 30, image: "https://rukminim1.flixcart.com/image/416/416/l0r070w0/mobile/m/j/b/-original-imagcg22fz7yhw6v.jpeg" }
@@ -102,11 +102,11 @@ const AdminDashboard = () => {
           { name: "Levis Men Jeans", price: 2999, category: "Fashion", stock: 120, image: "https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/15478224/2021/9/14/66848c0a-0158-47a3-8323-93881452654c1631626046045-Levis-Men-Jeans-1631626046045-1.jpg" }
         ],
         ajio: [
-          { name: "Ajio Slim Fit Casual Shirt", price: 19.99, category: "Clothing", stock: 150, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&q=80" },
-          { name: "Ajio Women Floral Maxi Dress", price: 34.99, category: "Clothing", stock: 100, image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=400&q=80" },
-          { name: "Ajio Denim Jacket", price: 44.99, category: "Clothing", stock: 80, image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400&q=80" },
-          { name: "Ajio Women's Designer Kurta", price: 24.99, category: "Clothing", stock: 120, image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&q=80" },
-          { name: "Ajio Retro Unisex Sneakers", price: 39.99, category: "Footwear", stock: 60, image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=80" }
+          { name: "Ajio Slim Fit Casual Shirt", price: 1659, category: "Clothing", stock: 150, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&q=80" },
+          { name: "Ajio Women Floral Maxi Dress", price: 2904, category: "Clothing", stock: 100, image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?w=400&q=80" },
+          { name: "Ajio Denim Jacket", price: 3734, category: "Clothing", stock: 80, image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400&q=80" },
+          { name: "Ajio Women's Designer Kurta", price: 2074, category: "Clothing", stock: 120, image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&q=80" },
+          { name: "Ajio Retro Unisex Sneakers", price: 3319, category: "Footwear", stock: 60, image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=80" }
         ]
       };
 
@@ -329,7 +329,7 @@ const AdminDashboard = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-[40px]" />
             <div className="flex justify-between items-start mb-6 relative z-10">
               <div className="p-3 bg-white/5 rounded-2xl">
-                <DollarSign className="w-6 h-6 text-green-400" />
+                <IndianRupee className="w-6 h-6 text-green-400" />
               </div>
               <span className="flex items-center text-xs text-green-400 font-medium bg-green-400/10 px-2 py-1 rounded-full">
                 <ArrowUpRight className="w-3 h-3 mr-1" />

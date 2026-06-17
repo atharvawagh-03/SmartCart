@@ -329,7 +329,11 @@ const seedDB = async () => {
     await Product.deleteMany({});
     console.log("Old products cleared.");
 
-    await Product.insertMany(products);
+    const inrProducts = products.map(p => ({
+      ...p,
+      price: Math.round(p.price * 83)
+    }));
+    await Product.insertMany(inrProducts);
     console.log(`✅ ${products.length} products added successfully!`);
 
     process.exit();
