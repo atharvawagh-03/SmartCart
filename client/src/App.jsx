@@ -15,6 +15,7 @@ import Settings from './pages/Settings';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 import NotificationToast from './components/NotificationToast';
@@ -41,8 +42,9 @@ function App() {
       <AuthProvider>
         <SocketProvider>
           <CartProvider>
-            <NotificationToast />
-            <Routes>
+            <WishlistProvider>
+              <NotificationToast />
+              <Routes>
               {/* Public Routes */}
               <Route 
                 path="/login" 
@@ -82,6 +84,7 @@ function App() {
               {/* Catch all */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+          </WishlistProvider>
           </CartProvider>
         </SocketProvider>
       </AuthProvider>

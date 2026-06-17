@@ -1,24 +1,33 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Trash2, ShoppingCart, Package } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
+import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../context/CartContext';
+import { useState } from 'react';
 
 const Wishlist = () => {
-  const [wishlistItems, setWishlistItems] = useState([
-    { id: 1, name: 'Wireless Headphones', price: 2999, image: '🎧', inStock: true },
-    { id: 2, name: 'Smart Watch', price: 1599, image: '⌚', inStock: true },
-    { id: 3, name: 'Laptop Stand', price: 1999, image: '💻', inStock: false },
-    { id: 4, name: 'Mechanical Keyboard', price: 4999, image: '⌨️', inStock: true },
-  ]);
+  const { wishlist, loading: wishlistLoading, removeFromWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const [movingItems, setMovingItems] = useState({});
 
-  const removeFromWishlist = (id) => {
-    setWishlistItems(items => items.filter(item => item.id !== id));
+  const moveToCart = async (productId) => {
+    setMovingItems(prev => ({ ...prev, [productId]: true }));
+    const success = await addToCart(productId, 1);
+    if (success) {
+      await removeFromWishlist(productId);
+    }
+    setMovingItems(prev => ({ ...prev, [productId]: false }));
   };
 
-  const moveToCart = (id) => {
-    setWishlistItems(items => items.filter(item => item.id !== id));
-    // In a real app, this would add to cart context
-  };
+  const wishlistItems = wishlist?.products || [];
+
+  if (wishlistLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6 md:p-12">
@@ -57,40 +66,58 @@ const Wishlist = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {wishlistItems.map((item) => (
                   <div 
-                    key={item.id}
-                    className="bg-black/20 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-colors group"
+                    key={item._id}
+                    className="bg-black/20 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-colors group flex flex-col justify-between"
                   >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="text-4xl">{item.image}</div>
-                      <button 
-                        onClick={() => removeFromWishlist(item.id)}
-                        className="p-2 rounded-lg hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100"
+                    <div>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="w-16 h-16 bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-white/5">
+                          <img 
+                            src={item.image || "https://placehold.co/600x400/1a1a2e/ffffff?text=No+Image"} 
+                            alt={item.name} 
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Image+Not+Found";
+                            }}
+                          />
+                        </div>
+                        <button 
+                          onClick={() => removeFromWishlist(item._id)}
+                          className="p-2 rounded-lg hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4 text-white/60 hover:text-red-400" />
+                        </button>
+                      </div>
+                      
+                      <h3 className="text-white font-medium mb-2 line-clamp-2">{item.name}</h3>
+                    </div>
+                    
+                    <div>
+                      <div className="flex items-center justify-between mb-4 mt-2">
+                        <span className="text-xl font-bold text-purple-400">{formatCurrency(item.price)}</span>
+                        <span className={`text-xs px-2 py-1 rounded-full ${item.stock > 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                          {item.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => moveToCart(item._id)}
+                        disabled={item.stock < 1 || movingItems[item._id]}
+                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-colors cursor-pointer ${
+                          item.stock > 0 && !movingItems[item._id]
+                            ? 'bg-purple-500 hover:bg-purple-600 text-white' 
+                            : 'bg-white/5 text-white/40 cursor-not-allowed'
+                        }`}
                       >
-                        <Trash2 className="w-4 h-4 text-white/60 hover:text-red-400" />
+                        {movingItems[item._id] ? (
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <ShoppingCart className="w-4 h-4" />
+                        )}
+                        <span className="font-medium">Move to Cart</span>
                       </button>
                     </div>
-                    
-                    <h3 className="text-white font-medium mb-2">{item.name}</h3>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xl font-bold text-purple-400">{formatCurrency(item.price)}</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${item.inStock ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                        {item.inStock ? 'In Stock' : 'Out of Stock'}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() => moveToCart(item.id)}
-                      disabled={!item.inStock}
-                      className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-colors ${
-                        item.inStock 
-                          ? 'bg-purple-500 hover:bg-purple-600 text-white' 
-                          : 'bg-white/5 text-white/40 cursor-not-allowed'
-                      }`}
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      <span className="font-medium">Move to Cart</span>
-                    </button>
                   </div>
                 ))}
               </div>

@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check, Shield, Plus, ClipboardList } from 'lucide-react';
+import { ShoppingBag, Search, Tag, DollarSign, Package, ShoppingCart, Check, Shield, Plus, ClipboardList, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/currency';
 
 const Products = () => {
@@ -15,6 +16,15 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const { addToCart, cartCount } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  const handleToggleWishlist = async (productId) => {
+    if (isInWishlist(productId)) {
+      await removeFromWishlist(productId);
+    } else {
+      await addToWishlist(productId);
+    }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -199,6 +209,20 @@ const Products = () => {
                       <Tag className="w-3 h-3 text-purple-400" />
                       {product.category}
                     </span>
+                  </div>
+                  <div className="absolute top-4 right-4 z-20">
+                    <button
+                      onClick={() => handleToggleWishlist(product._id)}
+                      className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:text-purple-400 hover:border-purple-500/30 transition-all duration-300 shadow-xl cursor-pointer"
+                    >
+                      <Heart 
+                        className={`w-4 h-4 transition-colors duration-300 ${
+                          isInWishlist(product._id) 
+                            ? 'fill-purple-500 text-purple-500' 
+                            : 'text-white/80'
+                        }`} 
+                      />
+                    </button>
                   </div>
                 </div>
                 
