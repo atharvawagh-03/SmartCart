@@ -1,6 +1,14 @@
+/** Convert USD to INR (approximate exchange rate) */
+const USD_TO_INR = 83.5;
+
+/** Convert amount from USD to INR */
+export const convertToINR = (amountInUSD) => {
+  return (Number(amountInUSD) || 0) * USD_TO_INR;
+};
+
 /** Format amount in Indian Rupees (INR) */
 export const formatCurrency = (amount) => {
-  const value = Number(amount) || 0;
+  const value = convertToINR(amount);
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',

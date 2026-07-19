@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList } from 'lucide-react';
+import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Home as HomeIcon, Car, Bike, Gamepad2, Armchair, Book, Utensils, Baby, Heart } from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
@@ -9,9 +9,26 @@ const Home = () => {
   const { user } = useAuth();
   const { cartCount } = useCart();
 
+  const categories = [
+    { name: 'For You', icon: Sparkles, color: 'text-yellow-400' },
+    { name: 'Fashion', icon: Shirt, color: 'text-pink-400' },
+    { name: 'Mobiles', icon: Smartphone, color: 'text-blue-400' },
+    { name: 'Electronics', icon: Zap, color: 'text-purple-400' },
+    { name: 'Beauty', icon: Heart, color: 'text-red-400' },
+    { name: 'Home', icon: HomeIcon, color: 'text-green-400' },
+    { name: 'Appliances', icon: Zap, color: 'text-orange-400' },
+    { name: 'Toys', icon: Gamepad2, color: 'text-cyan-400' },
+    { name: 'Food', icon: Utensils, color: 'text-amber-400' },
+    { name: 'Auto', icon: Car, color: 'text-slate-400' },
+    { name: 'Sports', icon: Gamepad2, color: 'text-emerald-400' },
+    { name: 'Furniture', icon: Armchair, color: 'text-teal-400' },
+    { name: 'Books', icon: Book, color: 'text-indigo-400' },
+    { name: '2 Wheelers', icon: Bike, color: 'text-violet-400' },
+  ];
+
   return (
     <div className="min-h-screen p-6 md:p-12">
-      <nav className="relative z-50 flex justify-between items-center mb-12 glass-panel rounded-2xl p-4 px-6 max-w-6xl mx-auto">
+      <nav className="relative z-50 flex justify-between items-center mb-8 glass-panel rounded-2xl p-4 px-6 max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
             <ShoppingBag className="text-white w-5 h-5" />
@@ -60,6 +77,31 @@ const Home = () => {
           <UserMenu />
         </div>
       </nav>
+
+      {/* Category Navigation */}
+      <div className="max-w-6xl mx-auto mb-8">
+        <div className="glass-panel rounded-2xl p-4">
+          <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <Link
+                  key={category.name}
+                  to="/products"
+                  className="flex flex-col items-center gap-2 px-4 py-3 rounded-xl hover:bg-white/10 transition-all group min-w-[80px] cursor-pointer"
+                >
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Icon className={`w-6 h-6 ${category.color}`} />
+                  </div>
+                  <span className="text-xs text-white/70 group-hover:text-white transition-colors whitespace-nowrap">
+                    {category.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
       <main className="max-w-6xl mx-auto">
         <div className="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
