@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Home as HomeIcon, Book, Heart } from 'lucide-react';
+import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Heart, Monitor, Headphones, Watch, Footprints, Handbag, Tv, Baby, Droplet } from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
@@ -11,13 +11,24 @@ const Home = () => {
 
   const categories = [
     { name: 'For You', icon: Sparkles, color: 'text-yellow-400' },
-    { name: 'Fashion', icon: Shirt, color: 'text-pink-400' },
-    { name: 'Mobiles', icon: Smartphone, color: 'text-blue-400' },
     { name: 'Electronics', icon: Zap, color: 'text-purple-400' },
-    { name: 'Beauty', icon: Heart, color: 'text-red-400' },
-    { name: 'Home', icon: HomeIcon, color: 'text-green-400' },
-    { name: 'Appliances', icon: Zap, color: 'text-orange-400' },
-    { name: 'Books', icon: Book, color: 'text-indigo-400' },
+    { name: 'Smartphones', icon: Smartphone, color: 'text-blue-400' },
+    { name: 'Laptops', icon: Monitor, color: 'text-cyan-400' },
+    { name: 'Audio', icon: Headphones, color: 'text-pink-400' },
+    { name: 'Wearables', icon: Watch, color: 'text-emerald-400' },
+    { name: 'Clothing', icon: Shirt, color: 'text-indigo-400' },
+    { name: 'Footwear', icon: Footprints, color: 'text-orange-400' },
+    { name: 'Accessories', icon: Handbag, color: 'text-amber-400' },
+    { name: 'Computers', icon: Monitor, color: 'text-slate-400' },
+    { name: 'Televisions', icon: Tv, color: 'text-red-400' },
+    { name: 'Appliances', icon: Zap, color: 'text-yellow-400' },
+    { name: 'Personal Care', icon: Baby, color: 'text-teal-400' },
+    { name: 'Bags', icon: Handbag, color: 'text-violet-400' },
+    { name: 'Skincare', icon: Droplet, color: 'text-rose-400' },
+    { name: "Women's Clothing", icon: Shirt, color: 'text-fuchsia-400' },
+    { name: "Women's Footwear", icon: Footprints, color: 'text-pink-400' },
+    { name: "Women's Accessories", icon: Handbag, color: 'text-purple-400' },
+    { name: 'Beauty & Makeup', icon: Heart, color: 'text-red-400' },
   ];
 
   return (
@@ -82,6 +93,7 @@ const Home = () => {
                 <Link
                   key={category.name}
                   to="/products"
+                  state={{ category: category.name }}
                   className="flex flex-col items-center gap-2 px-4 py-3 rounded-xl hover:bg-white/10 transition-all group min-w-[80px] cursor-pointer"
                 >
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">

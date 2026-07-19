@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ShoppingBag, Search, Tag, IndianRupee, Package, ShoppingCart, Check, Shield, Plus, ClipboardList, Heart } from 'lucide-react';
@@ -9,6 +9,7 @@ import { formatCurrency } from '../utils/currency';
 
 const Products = () => {
   const { user } = useAuth();
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +18,12 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { addToCart, cartCount } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  useEffect(() => {
+    if (location.state?.category) {
+      setSelectedCategory(location.state.category);
+    }
+  }, [location.state]);
 
   const handleToggleWishlist = async (productId) => {
     if (isInWishlist(productId)) {
