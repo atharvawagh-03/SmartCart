@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Home as HomeIcon, Car, Bike, Gamepad2, Armchair, Book, Utensils, Baby, Heart } from 'lucide-react';
+import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Home as HomeIcon, Book, Heart } from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
@@ -17,13 +17,7 @@ const Home = () => {
     { name: 'Beauty', icon: Heart, color: 'text-red-400' },
     { name: 'Home', icon: HomeIcon, color: 'text-green-400' },
     { name: 'Appliances', icon: Zap, color: 'text-orange-400' },
-    { name: 'Toys', icon: Gamepad2, color: 'text-cyan-400' },
-    { name: 'Food', icon: Utensils, color: 'text-amber-400' },
-    { name: 'Auto', icon: Car, color: 'text-slate-400' },
-    { name: 'Sports', icon: Gamepad2, color: 'text-emerald-400' },
-    { name: 'Furniture', icon: Armchair, color: 'text-teal-400' },
     { name: 'Books', icon: Book, color: 'text-indigo-400' },
-    { name: '2 Wheelers', icon: Bike, color: 'text-violet-400' },
   ];
 
   return (
