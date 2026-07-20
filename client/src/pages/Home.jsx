@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Heart, Monitor, Headphones, Watch, Footprints, Handbag, Tv, Baby, Droplet } from 'lucide-react';
+import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Heart, Monitor, Headphones, Watch, Footprints, Handbag, Tv, Baby, Droplet, Gamepad2, Puzzle, Dices, Bike, Dumbbell, Tent } from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
@@ -29,6 +29,28 @@ const Home = () => {
     { name: "Women's Footwear", icon: Footprints, color: 'text-pink-400' },
     { name: "Women's Accessories", icon: Handbag, color: 'text-purple-400' },
     { name: 'Beauty & Makeup', icon: Heart, color: 'text-red-400' },
+    { name: 'Toys', icon: Gamepad2, color: 'text-lime-400' },
+    { name: 'Board Games', icon: Dices, color: 'text-amber-400' },
+    { name: 'Puzzles', icon: Puzzle, color: 'text-teal-400' },
+    { name: 'Building Blocks', icon: Gamepad2, color: 'text-orange-400' },
+    { name: 'Video Games', icon: Gamepad2, color: 'text-purple-400' },
+    { name: 'Dolls', icon: Baby, color: 'text-pink-400' },
+    { name: 'Action Figures', icon: Gamepad2, color: 'text-red-400' },
+    { name: 'Outdoor Toys', icon: Tent, color: 'text-green-400' },
+    { name: 'Sports Equipment', icon: Dumbbell, color: 'text-blue-400' },
+    { name: 'Football', icon: Gamepad2, color: 'text-emerald-400' },
+    { name: 'Basketball', icon: Gamepad2, color: 'text-orange-400' },
+    { name: 'Cricket', icon: Gamepad2, color: 'text-yellow-400' },
+    { name: 'Tennis', icon: Gamepad2, color: 'text-lime-400' },
+    { name: 'Badminton', icon: Gamepad2, color: 'text-cyan-400' },
+    { name: 'Cycling', icon: Bike, color: 'text-indigo-400' },
+    { name: 'Skateboarding', icon: Gamepad2, color: 'text-rose-400' },
+    { name: 'Fitness', icon: Dumbbell, color: 'text-violet-400' },
+    { name: 'Swimming', icon: Droplet, color: 'text-blue-400' },
+    { name: 'Camping', icon: Tent, color: 'text-emerald-400' },
+    { name: 'Kids Clothing', icon: Shirt, color: 'text-pink-400' },
+    { name: 'Kids Footwear', icon: Footprints, color: 'text-amber-400' },
+    { name: 'School Supplies', icon: Gamepad2, color: 'text-purple-400' },
   ];
 
   return (
