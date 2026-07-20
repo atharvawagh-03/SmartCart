@@ -116,12 +116,12 @@ const Home = () => {
                   key={category.name}
                   to="/products"
                   state={{ category: category.name }}
-                  className="flex flex-col items-center gap-2 px-4 py-3 rounded-xl hover:bg-white/10 transition-all group min-w-[80px] cursor-pointer"
+                  className="flex flex-col items-center gap-2 px-3 py-3 rounded-xl hover:bg-white/10 transition-all group min-w-[90px] w-[90px] cursor-pointer"
                 >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
                     <Icon className={`w-6 h-6 ${category.color}`} />
                   </div>
-                  <span className="text-xs text-white/70 group-hover:text-white transition-colors whitespace-nowrap">
+                  <span className="text-xs text-white/70 group-hover:text-white transition-colors text-center leading-tight w-full break-words">
                     {category.name}
                   </span>
                 </Link>
