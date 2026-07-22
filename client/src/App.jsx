@@ -18,20 +18,22 @@ import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AIProvider } from './context/AIContext';
 import NotificationToast from './components/NotificationToast';
+import AIAssistant from './components/ai/AIAssistant';
 
-// Component to handle redirecting authenticated users away from auth pages
+// Redirect authenticated users away from login/register
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
       </div>
     );
   }
-  
+
   return user ? <Navigate to="/" replace /> : children;
 };
 
@@ -39,55 +41,46 @@ function App() {
   return (
     <Router>
       <ThemeProvider>
-      <AuthProvider>
-        <SocketProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <NotificationToast />
-              <Routes>
-              {/* Public Routes */}
-              <Route 
-                path="/login" 
-                element={
-                  <PublicRoute>
-                    <Login />
-                  </PublicRoute>
-                } 
-              />
-              <Route 
-                path="/register" 
-                element={
-                  <PublicRoute>
-                    <Register />
-                  </PublicRoute>
-                } 
-              />
+        <AuthProvider>
+          <SocketProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <AIProvider>
+                  {/* Global overlays — rendered outside Routes so they appear on every page */}
+                  <NotificationToast />
+                  <AIAssistant />
 
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/orders" element={<MyOrders />} />
-                <Route path="/recent-searches" element={<RecentSearches />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/settings" element={<Settings />} />
-              </Route>
+                  <Routes>
+                    {/* Public */}
+                    <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                    <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
-              {/* Admin Routes */}
-              <Route element={<AdminRoute />}>
-                <Route path="/admin" element={<AdminDashboard />} />
-              </Route>
-              
-              {/* Catch all */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </WishlistProvider>
-          </CartProvider>
-        </SocketProvider>
-      </AuthProvider>
+                    {/* Protected */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/products" element={<Products />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/checkout" element={<Checkout />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/orders" element={<MyOrders />} />
+                      <Route path="/recent-searches" element={<RecentSearches />} />
+                      <Route path="/wishlist" element={<Wishlist />} />
+                      <Route path="/settings" element={<Settings />} />
+                    </Route>
+
+                    {/* Admin */}
+                    <Route element={<AdminRoute />}>
+                      <Route path="/admin" element={<AdminDashboard />} />
+                    </Route>
+
+                    {/* Catch-all */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </AIProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </SocketProvider>
+        </AuthProvider>
       </ThemeProvider>
     </Router>
   );
