@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ShoppingBag, Tag, IndianRupee, Package, Check, Sparkles, Heart } from 'lucide-react';
+import { ShoppingBag, Check, Heart, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/currency';
+import { Link } from 'react-router-dom';
 
 const RecommendedProducts = () => {
   const [recommendations, setRecommendations] = useState([]);
@@ -44,7 +45,6 @@ const RecommendedProducts = () => {
   }, [user]);
 
   const handleAddToCart = async (productId) => {
-    // Also track view when added to cart
     try {
       await axios.post(`/api/products/${productId}/view`);
     } catch (e) {
@@ -58,7 +58,7 @@ const RecommendedProducts = () => {
       setAddingToCart(prev => ({ ...prev, [productId]: 'success' }));
       setTimeout(() => {
         setAddingToCart(prev => ({ ...prev, [productId]: null }));
-      }, 2000);
+      }, 1800);
     } else {
       setAddingToCart(prev => ({ ...prev, [productId]: null }));
     }
@@ -74,8 +74,8 @@ const RecommendedProducts = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-48">
-        <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+      <div className="flex justify-center items-center h-40">
+        <div className="w-5 h-5 border-2 border-border border-t-blue-600 rounded-full animate-spin" />
       </div>
     );
   }
@@ -85,95 +85,110 @@ const RecommendedProducts = () => {
   }
 
   return (
-    <div className="mt-12 mb-8">
-      <div className="flex items-center gap-3 mb-6">
-        <Sparkles className="w-6 h-6 text-yellow-400" />
-        <h2 className="text-2xl font-bold">Recommended for you</h2>
+    <section className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight text-white">Curated For You</h2>
+          <p className="text-xs text-white/50">Recommendations aligned with your browsing</p>
+        </div>
+        <Link 
+          to="/products"
+          className="text-xs font-medium text-blue-500 hover:text-blue-400 inline-flex items-center gap-1 transition-colors"
+        >
+          <span>View all products</span>
+          <ArrowRight className="w-3 h-3" />
+        </Link>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {recommendations.map((product) => (
-          <div 
-            key={product._id} 
-            className="glass-panel rounded-3xl overflow-hidden group hover:border-purple-500/30 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(170,59,255,0.1)] flex flex-col h-full"
-            onClick={() => handleTrackView(product._id)}
-          >
-            <div className="aspect-[4/3] overflow-hidden relative bg-white/5 cursor-pointer">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <ShoppingBag className="w-10 h-10 text-white/10 absolute" />
-              </div>
-              <img 
-                src={product.image || "https://placehold.co/600x400/1a1a2e/ffffff?text=No+Image"} 
-                alt={product.name} 
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-contain relative z-10 transition-transform duration-500 group-hover:scale-110"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Image+Not+Found";
-                }}
-              />
-              <div className="absolute top-3 left-3 z-20">
-                <span className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-medium border border-white/10 flex items-center gap-1 shadow-xl">
-                  <Tag className="w-3 h-3 text-purple-400" />
-                  {product.category}
-                </span>
-              </div>
-              <div className="absolute top-3 right-3 z-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {recommendations.map((product) => {
+          const isWishlisted = isInWishlist(product._id);
+          const isAdding = addingToCart[product._id] === 'adding';
+          const isSuccess = addingToCart[product._id] === 'success';
+
+          return (
+            <div 
+              key={product._id} 
+              className="glass-panel rounded-xl overflow-hidden flex flex-col h-full hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors"
+              onClick={() => handleTrackView(product._id)}
+            >
+              {/* Product Image Stage */}
+              <div className="aspect-[4/3] overflow-hidden relative bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border-b border-border">
+                <img 
+                  src={product.image || "https://placehold.co/600x400/18181b/ffffff?text=Product"} 
+                  alt={product.name} 
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain p-4 transition-transform duration-300 hover:scale-105"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://placehold.co/600x400/18181b/ffffff?text=Image+Unavailable";
+                  }}
+                />
+                
+                {/* Category tag */}
+                <div className="absolute top-2.5 left-2.5 z-10">
+                  <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-black/70 text-white/90 backdrop-blur-sm border border-white/10">
+                    {product.category}
+                  </span>
+                </div>
+
+                {/* Wishlist toggle */}
                 <button
                   onClick={(e) => { e.stopPropagation(); handleToggleWishlist(product._id); }}
-                  className="p-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:text-purple-400 hover:border-purple-500/30 transition-all duration-300 shadow-xl cursor-pointer"
+                  className="absolute top-2.5 right-2.5 z-10 p-1.5 rounded-md bg-black/60 text-white/80 hover:text-white border border-white/10 backdrop-blur-sm transition-colors"
+                  aria-label={isWishlisted ? "Remove from wishlist" : "Save to wishlist"}
                 >
                   <Heart 
-                    className={`w-3.5 h-3.5 transition-colors duration-300 ${
-                      isInWishlist(product._id) 
-                        ? 'fill-purple-500 text-purple-500' 
-                        : 'text-white/80'
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      isWishlisted 
+                        ? 'fill-rose-500 text-rose-500' 
+                        : 'text-white/70 hover:text-white'
                     }`} 
                   />
                 </button>
               </div>
-            </div>
-            
-            <div className="p-5 flex flex-col flex-grow">
-              <h3 className="text-lg font-semibold mb-2 line-clamp-1 group-hover:text-purple-400 transition-colors">
-                {product.name}
-              </h3>
               
-              <div className="flex items-center gap-4 text-white/60 text-xs mb-4 mt-auto">
-                <div className="flex items-center gap-1">
-                  <IndianRupee className="w-3 h-3 text-green-400" />
-                  <span className="font-medium text-white">{formatCurrency(product.price)}</span>
+              {/* Content info */}
+              <div className="p-4 flex flex-col flex-grow justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-white line-clamp-1 leading-snug">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center justify-between text-xs pt-1">
+                    <span className="font-semibold text-white tabular-nums">
+                      {formatCurrency(product.price)}
+                    </span>
+                    <span className="text-white/50 text-[11px] tabular-nums">
+                      {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Package className="w-3 h-3 text-blue-400" />
-                  <span>{product.stock} left</span>
-                </div>
+                
+                <button 
+                  onClick={(e) => { e.stopPropagation(); handleAddToCart(product._id); }}
+                  disabled={isAdding || product.stock < 1}
+                  className="w-full py-2 px-3 rounded-lg border border-border bg-surface hover:bg-surface-hover text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {isAdding ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : isSuccess ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Added to cart</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-3.5 h-3.5 text-white/70" />
+                      <span>{product.stock < 1 ? 'Out of Stock' : 'Add to Cart'}</span>
+                    </>
+                  )}
+                </button>
               </div>
-              
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleAddToCart(product._id); }}
-                disabled={addingToCart[product._id] === 'adding' || product.stock < 1}
-                className="w-full py-2 px-3 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-600 border border-white/10 hover:border-transparent transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2 group/btn disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {addingToCart[product._id] === 'adding' ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : addingToCart[product._id] === 'success' ? (
-                  <>
-                    <Check className="w-4 h-4 text-green-400" />
-                    <span>Added</span>
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag className="w-4 h-4 group-hover/btn:animate-bounce" />
-                    <span>{product.stock < 1 ? 'Out of Stock' : 'Add to Cart'}</span>
-                  </>
-                )}
-              </button>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 };
 

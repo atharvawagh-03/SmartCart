@@ -1,7 +1,33 @@
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Package, ShoppingCart, Shield, ClipboardList, Smartphone, Shirt, Zap, Sparkles, Heart, Monitor, Headphones, Watch, Footprints, Handbag, Tv, Baby, Droplet, Gamepad2, Puzzle, Dices, Bike, Dumbbell, Tent } from 'lucide-react';
+import { 
+  ShoppingBag, 
+  Package, 
+  ShoppingCart, 
+  Shield, 
+  ClipboardList, 
+  Smartphone, 
+  Shirt, 
+  Zap, 
+  Heart, 
+  Monitor, 
+  Headphones, 
+  Watch, 
+  Footprints, 
+  Handbag, 
+  Tv, 
+  Baby, 
+  Droplet, 
+  Gamepad2, 
+  Puzzle, 
+  Dices, 
+  Bike, 
+  Dumbbell, 
+  Tent,
+  ArrowRight,
+  CheckCircle2
+} from 'lucide-react';
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 
@@ -10,105 +36,94 @@ const Home = () => {
   const { cartCount } = useCart();
 
   const categories = [
-    { name: 'For You', icon: Sparkles, color: 'text-yellow-400' },
-    { name: 'Electronics', icon: Zap, color: 'text-purple-400' },
-    { name: 'Smartphones', icon: Smartphone, color: 'text-blue-400' },
-    { name: 'Laptops', icon: Monitor, color: 'text-cyan-400' },
-    { name: 'Audio', icon: Headphones, color: 'text-pink-400' },
-    { name: 'Wearables', icon: Watch, color: 'text-emerald-400' },
-    { name: 'Clothing', icon: Shirt, color: 'text-indigo-400' },
-    { name: 'Footwear', icon: Footprints, color: 'text-orange-400' },
-    { name: 'Accessories', icon: Handbag, color: 'text-amber-400' },
-    { name: 'Computers', icon: Monitor, color: 'text-slate-400' },
-    { name: 'Televisions', icon: Tv, color: 'text-red-400' },
-    { name: 'Appliances', icon: Zap, color: 'text-yellow-400' },
-    { name: 'Personal Care', icon: Baby, color: 'text-teal-400' },
-    { name: 'Bags', icon: Handbag, color: 'text-violet-400' },
-    { name: 'Skincare', icon: Droplet, color: 'text-rose-400' },
-    { name: "Women's Clothing", icon: Shirt, color: 'text-fuchsia-400' },
-    { name: "Women's Footwear", icon: Footprints, color: 'text-pink-400' },
-    { name: "Women's Accessories", icon: Handbag, color: 'text-purple-400' },
-    { name: 'Beauty & Makeup', icon: Heart, color: 'text-red-400' },
-    { name: 'Toys', icon: Gamepad2, color: 'text-lime-400' },
-    { name: 'Board Games', icon: Dices, color: 'text-amber-400' },
-    { name: 'Puzzles', icon: Puzzle, color: 'text-teal-400' },
-    { name: 'Building Blocks', icon: Gamepad2, color: 'text-orange-400' },
-    { name: 'Video Games', icon: Gamepad2, color: 'text-purple-400' },
-    { name: 'Dolls', icon: Baby, color: 'text-pink-400' },
-    { name: 'Action Figures', icon: Gamepad2, color: 'text-red-400' },
-    { name: 'Outdoor Toys', icon: Tent, color: 'text-green-400' },
-    { name: 'Sports Equipment', icon: Dumbbell, color: 'text-blue-400' },
-    { name: 'Football', icon: Gamepad2, color: 'text-emerald-400' },
-    { name: 'Basketball', icon: Gamepad2, color: 'text-orange-400' },
-    { name: 'Cricket', icon: Gamepad2, color: 'text-yellow-400' },
-    { name: 'Tennis', icon: Gamepad2, color: 'text-lime-400' },
-    { name: 'Badminton', icon: Gamepad2, color: 'text-cyan-400' },
-    { name: 'Cycling', icon: Bike, color: 'text-indigo-400' },
-    { name: 'Skateboarding', icon: Gamepad2, color: 'text-rose-400' },
-    { name: 'Fitness', icon: Dumbbell, color: 'text-violet-400' },
-    { name: 'Swimming', icon: Droplet, color: 'text-blue-400' },
-    { name: 'Camping', icon: Tent, color: 'text-emerald-400' },
-    { name: 'Kids Clothing', icon: Shirt, color: 'text-pink-400' },
-    { name: 'Kids Footwear', icon: Footprints, color: 'text-amber-400' },
-    { name: 'School Supplies', icon: Gamepad2, color: 'text-purple-400' },
+    { name: 'Electronics', icon: Zap },
+    { name: 'Smartphones', icon: Smartphone },
+    { name: 'Laptops', icon: Monitor },
+    { name: 'Audio', icon: Headphones },
+    { name: 'Wearables', icon: Watch },
+    { name: 'Clothing', icon: Shirt },
+    { name: 'Footwear', icon: Footprints },
+    { name: 'Accessories', icon: Handbag },
+    { name: 'Computers', icon: Monitor },
+    { name: 'Televisions', icon: Tv },
+    { name: 'Appliances', icon: Zap },
+    { name: 'Personal Care', icon: Baby },
+    { name: 'Bags', icon: Handbag },
+    { name: 'Skincare', icon: Droplet },
+    { name: "Women's Clothing", icon: Shirt },
+    { name: "Women's Footwear", icon: Footprints },
+    { name: "Women's Accessories", icon: Handbag },
+    { name: 'Beauty & Makeup', icon: Heart },
+    { name: 'Toys', icon: Gamepad2 },
+    { name: 'Board Games', icon: Dices },
+    { name: 'Puzzles', icon: Puzzle },
+    { name: 'Video Games', icon: Gamepad2 },
+    { name: 'Sports Equipment', icon: Dumbbell },
+    { name: 'Cycling', icon: Bike },
+    { name: 'Fitness', icon: Dumbbell },
+    { name: 'Camping', icon: Tent },
+    { name: 'Kids Clothing', icon: Shirt },
   ];
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <nav className="relative z-50 flex justify-between items-center mb-8 glass-panel rounded-2xl p-4 px-6 max-w-6xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
-            <ShoppingBag className="text-white w-5 h-5" />
+    <div className="min-h-screen pb-16">
+      {/* ── Navigation Header ── */}
+      <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-border">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 flex items-center justify-center font-bold text-sm tracking-tight shadow-xs">
+              <ShoppingBag className="w-4 h-4" />
+            </div>
+            <span className="text-base font-semibold tracking-tight text-white">
+              SmartCart
+            </span>
           </div>
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-            SmartCart
-          </span>
-        </div>
-        
-        <div className="flex items-center gap-6">
-          {user?.role === 'admin' && (
-            <Link 
-              to="/admin"
-              className="hidden md:flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors font-medium"
-            >
-              <Shield className="w-4 h-4" />
-              <span>Admin</span>
-            </Link>
-          )}
-          <Link 
-            to="/products"
-            className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors"
-          >
-            <Package className="w-4 h-4" />
-            <span>Products</span>
-          </Link>
-          <Link 
-            to="/orders"
-            className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors"
-          >
-            <ClipboardList className="w-4 h-4" />
-            <span>My Orders</span>
-          </Link>
-          <Link 
-            to="/cart"
-            className="hidden md:flex items-center gap-2 text-white/80 hover:text-white transition-colors relative"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            <span>Cart</span>
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-3 bg-purple-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
+          
+          <nav className="flex items-center gap-5">
+            {user?.role === 'admin' && (
+              <Link 
+                to="/admin"
+                className="hidden md:flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span>Admin</span>
+              </Link>
             )}
-          </Link>
-          <UserMenu />
+            <Link 
+              to="/products"
+              className="hidden md:flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors"
+            >
+              <Package className="w-3.5 h-3.5" />
+              <span>Catalog</span>
+            </Link>
+            <Link 
+              to="/orders"
+              className="hidden md:flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors"
+            >
+              <ClipboardList className="w-3.5 h-3.5" />
+              <span>Orders</span>
+            </Link>
+            <Link 
+              to="/cart"
+              className="relative p-2 text-white/70 hover:text-white transition-colors"
+              aria-label="Shopping Cart"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {cartCount > 0 && (
+                <span className="absolute 0 top-0.5 right-0.5 bg-blue-600 text-white text-[10px] font-medium w-4 h-4 rounded-full flex items-center justify-center tabular-nums">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            <UserMenu />
+          </nav>
         </div>
-      </nav>
+      </header>
 
-      {/* Category Navigation */}
-      <div className="max-w-6xl mx-auto mb-8">
-        <div className="glass-panel rounded-2xl p-4">
-          <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
+        {/* ── Category Scroller ── */}
+        <section aria-label="Product Categories">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
             {categories.map((category) => {
               const Icon = category.icon;
               return (
@@ -116,54 +131,76 @@ const Home = () => {
                   key={category.name}
                   to="/products"
                   state={{ category: category.name }}
-                  className="flex flex-col items-center gap-2 px-3 py-3 rounded-xl hover:bg-white/10 transition-all group min-w-[90px] w-[90px] cursor-pointer"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors shrink-0 text-xs text-white/80 hover:text-white"
                 >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
-                    <Icon className={`w-6 h-6 ${category.color}`} />
-                  </div>
-                  <span className="text-xs text-white/70 group-hover:text-white transition-colors text-center leading-tight w-full break-words">
-                    {category.name}
-                  </span>
+                  <Icon className="w-3.5 h-3.5 text-white/60" />
+                  <span>{category.name}</span>
                 </Link>
               );
             })}
           </div>
-        </div>
-      </div>
+        </section>
 
-      <main className="max-w-6xl mx-auto">
-        <div className="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px]" />
-          
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">{user?.name}</span>
-          </h1>
-          <p className="text-lg text-white/60 max-w-2xl mb-8">
-            You have successfully authenticated into your dashboard. Your JWT token is securely stored and managed via context.
-          </p>
+        {/* ── Customer Hub / Welcome Section ── */}
+        <section className="glass-panel rounded-2xl p-6 sm:p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-500 dark:text-blue-400 border border-blue-500/20">
+                <CheckCircle2 className="w-3 h-3" />
+                <span>Verified Account</span>
+              </div>
+              
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-2">
+                  Welcome back, {user?.name || 'Customer'}
+                </h1>
+                <p className="text-sm text-white/60 max-w-xl leading-relaxed">
+                  Browse curated collections, manage your active deliveries, or pick up where you left off.
+                </p>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Link
-              to="/orders"
-              className="bg-black/20 border border-white/10 rounded-2xl p-6 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all group"
-            >
-              <ClipboardList className="w-8 h-8 text-purple-400 mb-3 group-hover:scale-110 transition-transform" />
-              <h3 className="text-lg font-medium mb-2 text-purple-400">My Orders</h3>
-              <p className="text-sm text-white/60">Track active orders and view your purchase history</p>
-            </Link>
-            <div className="bg-black/20 border border-white/10 rounded-2xl p-6 md:col-span-2">
-              <h3 className="text-lg font-medium mb-2 text-purple-400">Your Profile</h3>
-              <div className="space-y-2 text-sm text-white/70">
-                <p><strong>Name:</strong> {user?.name}</p>
-                <p><strong>Email:</strong> {user?.email}</p>
-                <p><strong>Role:</strong> {user?.role || 'User'}</p>
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  to="/products"
+                  className="btn-primary !w-auto inline-flex items-center gap-2 px-4 py-2 text-xs"
+                >
+                  <span>Explore Catalog</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  to="/orders"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface hover:bg-surface-hover text-xs font-medium text-white transition-colors"
+                >
+                  <ClipboardList className="w-3.5 h-3.5 text-white/60" />
+                  <span>Track Recent Orders</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Account Quick Glance */}
+            <div className="rounded-xl border border-border bg-black/10 dark:bg-black/30 p-4 space-y-3">
+              <p className="text-xs font-medium uppercase tracking-wider text-white/40">Account Overview</p>
+              <div className="space-y-1.5 text-xs text-white/70">
+                <div className="flex justify-between py-1 border-b border-border">
+                  <span className="text-white/50">Name</span>
+                  <span className="font-medium text-white">{user?.name}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-border">
+                  <span className="text-white/50">Email</span>
+                  <span className="font-medium text-white">{user?.email}</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-white/50">Membership</span>
+                  <span className="font-medium text-blue-500 capitalize">{user?.role || 'Standard'}</span>
+                </div>
               </div>
             </div>
           </div>
-          
-          <RecommendedProducts />
-        </div>
-      </main>
+        </section>
+
+        {/* ── Recommendations ── */}
+        <RecommendedProducts />
+      </div>
     </div>
   );
 };

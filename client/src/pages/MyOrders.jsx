@@ -5,7 +5,7 @@ import {
   ArrowLeft,
   Package,
   Truck,
-  CheckCircle,
+  CheckCircle2,
   Clock,
   Eye,
   ChevronDown,
@@ -22,14 +22,14 @@ const TRACKING_STEPS = ['Pending', 'Processing', 'Shipped', 'Delivered'];
 const getStatusConfig = (status) => {
   switch (status) {
     case 'Delivered':
-      return { icon: CheckCircle, color: 'text-green-400', bgColor: 'bg-green-500/20', borderColor: 'border-green-500/30' };
+      return { icon: CheckCircle2, color: 'text-emerald-500', bgColor: 'bg-emerald-500/10', borderColor: 'border-emerald-500/20' };
     case 'Shipped':
-      return { icon: Truck, color: 'text-blue-400', bgColor: 'bg-blue-500/20', borderColor: 'border-blue-500/30' };
+      return { icon: Truck, color: 'text-blue-500', bgColor: 'bg-blue-500/10', borderColor: 'border-blue-500/20' };
     case 'Processing':
-      return { icon: Clock, color: 'text-yellow-400', bgColor: 'bg-yellow-500/20', borderColor: 'border-yellow-500/30' };
+      return { icon: Clock, color: 'text-amber-500', bgColor: 'bg-amber-500/10', borderColor: 'border-amber-500/20' };
     case 'Pending':
     default:
-      return { icon: Package, color: 'text-purple-400', bgColor: 'bg-purple-500/20', borderColor: 'border-purple-500/30' };
+      return { icon: Package, color: 'text-zinc-400', bgColor: 'bg-zinc-800/40', borderColor: 'border-zinc-700' };
   }
 };
 
@@ -38,9 +38,9 @@ const OrderTracker = ({ status }) => {
   const activeIndex = currentIndex === -1 ? 0 : currentIndex;
 
   return (
-    <div className="mt-6 pt-6 border-t border-white/10">
-      <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-4">Order tracking</p>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0">
+    <div className="mt-5 pt-5 border-t border-border">
+      <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-4">Tracking Progress</p>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
         {TRACKING_STEPS.map((step, index) => {
           const isComplete = index <= activeIndex;
           const isCurrent = index === activeIndex;
@@ -48,31 +48,31 @@ const OrderTracker = ({ status }) => {
             <div key={step} className="flex sm:flex-1 sm:flex-col items-center sm:text-center gap-3 sm:gap-2">
               <div className="flex sm:flex-col items-center gap-3 sm:gap-2 sm:w-full">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
+                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 border text-xs font-medium transition-colors ${
                     isComplete
-                      ? 'bg-purple-500/30 border-purple-500 text-purple-300'
-                      : 'bg-white/5 border-white/20 text-white/40'
-                  } ${isCurrent ? 'ring-2 ring-purple-500/50 ring-offset-2 ring-offset-[#0f0c20]' : ''}`}
+                      ? 'bg-blue-600 border-blue-600 text-white'
+                      : 'bg-surface border-border text-white/40'
+                  }`}
                 >
                   {isComplete ? (
-                    <CheckCircle className="w-4 h-4" />
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                   ) : (
-                    <span className="text-xs font-bold">{index + 1}</span>
+                    <span>{index + 1}</span>
                   )}
                 </div>
                 {index < TRACKING_STEPS.length - 1 && (
                   <div
                     className={`hidden sm:block flex-1 h-0.5 mx-2 ${
-                      index < activeIndex ? 'bg-purple-500' : 'bg-white/10'
+                      index < activeIndex ? 'bg-blue-600' : 'bg-border'
                     }`}
                   />
                 )}
                 <div className="sm:w-full">
-                  <p className={`text-sm font-medium ${isCurrent ? 'text-purple-400' : isComplete ? 'text-white' : 'text-white/40'}`}>
+                  <p className={`text-xs font-medium ${isCurrent ? 'text-blue-500' : isComplete ? 'text-white' : 'text-white/40'}`}>
                     {step}
                   </p>
                   {isCurrent && (
-                    <p className="text-xs text-white/50 mt-0.5">Current status</p>
+                    <p className="text-[10px] text-white/40 mt-0.5">Current Status</p>
                   )}
                 </div>
               </div>
@@ -131,44 +131,42 @@ const MyOrders = () => {
     return (
       <div
         key={order._id}
-        className="bg-black/20 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-colors"
+        className="glass-panel p-5 rounded-xl transition-colors hover:border-zinc-400 dark:hover:border-zinc-700"
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3">
             <div className={`p-2 rounded-lg ${statusConfig.bgColor}`}>
-              <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} />
+              <StatusIcon className={`w-4 h-4 ${statusConfig.color}`} />
             </div>
             <div>
-              <p className="text-white font-medium">Order {formatOrderId(order._id)}</p>
-              <p className="text-white/60 text-sm">
+              <p className="text-sm font-semibold text-white">Order {formatOrderId(order._id)}</p>
+              <p className="text-xs text-white/50">
                 {new Date(order.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
-                  month: 'long',
+                  month: 'short',
                   day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
                 })}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color} ${statusConfig.borderColor} border`}
+              className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color} ${statusConfig.borderColor} border`}
             >
               {order.status}
             </span>
-            <span className="text-white font-medium">{formatCurrency(order.totalPrice)}</span>
+            <span className="text-sm font-semibold text-white tabular-nums">{formatCurrency(order.totalPrice)}</span>
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-4">
-          <div className="space-y-2">
+        <div className="border-t border-border pt-3">
+          <div className="space-y-1.5">
             {order.orderItems?.map((item, index) => (
-              <div key={index} className="flex items-center justify-between text-sm gap-4">
+              <div key={index} className="flex items-center justify-between text-xs gap-4">
                 <span className="text-white/80 line-clamp-1">
                   {item.name} × {item.quantity}
                 </span>
-                <span className="text-white/60 shrink-0">
+                <span className="text-white/60 tabular-nums shrink-0">
                   {formatCurrency((item.price || 0) * item.quantity)}
                 </span>
               </div>
@@ -179,12 +177,12 @@ const MyOrders = () => {
         {isExpanded && (
           <>
             {order.shippingAddress?.addressLine1 && (
-              <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="mt-4 pt-4 border-t border-border">
                 <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2 flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" />
                   Delivery address
                 </p>
-                <div className="text-sm text-white/70 space-y-0.5">
+                <div className="text-xs text-white/70 space-y-0.5">
                   {formatAddressLines(order.shippingAddress).map((line, i) => (
                     <p key={i}>{line}</p>
                   ))}
@@ -195,15 +193,15 @@ const MyOrders = () => {
           </>
         )}
 
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex items-center gap-2">
           <button
             type="button"
             onClick={() => setExpandedId(isExpanded ? null : order._id)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-white text-sm"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover transition-colors text-white text-xs font-medium"
           >
-            <Eye className="w-4 h-4" />
-            {isExpanded ? 'Hide tracking' : 'Track order'}
-            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <Eye className="w-3.5 h-3.5" />
+            <span>{isExpanded ? 'Hide Details' : 'Track Order'}</span>
+            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>
@@ -211,93 +209,101 @@ const MyOrders = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <div className="max-w-6xl mx-auto">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">Back to Home</span>
-        </Link>
-
-        <div className="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px]" />
-
-          <div className="relative">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-              <div>
-                <h1 className="text-3xl font-bold mb-1">My Orders</h1>
-                <p className="text-white/60">View and track your order history</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setLoading(true);
-                  fetchOrders();
-                }}
-                disabled={loading}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white/80 transition-colors disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </button>
+    <div className="min-h-screen pb-16">
+      {/* ── Header ── */}
+      <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-border">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-white/60 hover:text-white transition-colors p-1" aria-label="Back to home">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="flex items-center gap-2">
+              <span className="text-base font-semibold tracking-tight text-white">SmartCart</span>
+              <span className="text-white/30 text-xs">/</span>
+              <span className="text-xs font-medium text-white/60">My Orders</span>
             </div>
+          </div>
 
-            {loading && orders.length === 0 ? (
-              <div className="flex justify-center py-16">
-                <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-              </div>
-            ) : error ? (
-              <div className="text-center py-16">
-                <p className="text-red-400 mb-4">{error}</p>
-                <button
-                  type="button"
-                  onClick={fetchOrders}
-                  className="px-6 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 transition-colors text-white font-medium"
-                >
-                  Try again
-                </button>
-              </div>
-            ) : orders.length === 0 ? (
-              <div className="text-center py-16">
-                <Package className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-white mb-2">No orders yet</h3>
-                <p className="text-white/60 mb-6">Place an order from your cart to see it here</p>
-                <Link
-                  to="/products"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 transition-colors text-white font-medium"
-                >
-                  <Package className="w-4 h-4" />
-                  Browse Products
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-10">
-                {activeOrders.length > 0 && (
-                  <section>
-                    <h2 className="text-lg font-semibold text-purple-400 mb-4 flex items-center gap-2">
-                      <Truck className="w-5 h-5" />
-                      Active orders ({activeOrders.length})
-                    </h2>
-                    <div className="space-y-4">{activeOrders.map(renderOrderCard)}</div>
-                  </section>
-                )}
+          <button
+            type="button"
+            onClick={() => {
+              setLoading(true);
+              fetchOrders();
+            }}
+            disabled={loading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover text-xs font-medium text-white/80 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </button>
+        </div>
+      </header>
 
-                {pastOrders.length > 0 && (
-                  <section>
-                    <h2 className="text-lg font-semibold text-white/80 mb-4 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-400" />
-                      Delivered ({pastOrders.length})
-                    </h2>
-                    <div className="space-y-4">{pastOrders.map(renderOrderCard)}</div>
-                  </section>
-                )}
-              </div>
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">
+            Order History
+          </h1>
+          <p className="text-xs text-white/50 mt-1">
+            Real-time status updates and order receipts.
+          </p>
+        </div>
+
+        {loading && orders.length === 0 ? (
+          <div className="flex justify-center py-16">
+            <div className="w-6 h-6 border-2 border-border border-t-blue-600 rounded-full animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="glass-panel p-8 text-center rounded-xl space-y-3">
+            <p className="text-sm text-rose-400">{error}</p>
+            <button
+              type="button"
+              onClick={fetchOrders}
+              className="btn-primary !w-auto inline-flex px-4 py-2 text-xs"
+            >
+              Try again
+            </button>
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="glass-panel p-12 text-center rounded-2xl max-w-lg mx-auto space-y-4">
+            <Package className="w-10 h-10 text-white/20 mx-auto" />
+            <div>
+              <h2 className="text-base font-semibold text-white">No orders found</h2>
+              <p className="text-xs text-white/50 mt-1">
+                You haven't placed any orders yet.
+              </p>
+            </div>
+            <Link
+              to="/products"
+              className="btn-primary !w-auto inline-flex items-center gap-1.5 px-4 py-2 text-xs"
+            >
+              <span>Explore Catalog</span>
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {activeOrders.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-blue-500" />
+                  <span>Active Shipments ({activeOrders.length})</span>
+                </h2>
+                <div className="space-y-3">{activeOrders.map(renderOrderCard)}</div>
+              </section>
+            )}
+
+            {pastOrders.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span>Delivered Orders ({pastOrders.length})</span>
+                </h2>
+                <div className="space-y-3">{pastOrders.map(renderOrderCard)}</div>
+              </section>
             )}
           </div>
-        </div>
-      </div>
+        )}
+      </main>
     </div>
   );
 };

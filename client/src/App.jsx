@@ -29,7 +29,7 @@ const PublicRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-zinc-300 dark:border-zinc-700 border-t-blue-600 rounded-full animate-spin" />
       </div>
     );
   }

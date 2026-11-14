@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Lock, LogIn, ArrowRight, AlertCircle } from 'lucide-react';
+import { Mail, Lock, LogIn, ArrowRight, AlertCircle, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
@@ -18,91 +18,80 @@ const Login = () => {
       await login(email, password);
     } catch (err) {
       console.error("Login failed:", err);
-      // Error is handled in context
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600/30 rounded-full blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px]" />
-      
-      <div className="w-full max-w-md z-10">
-        <div className="glass-panel rounded-3xl p-8 sm:p-10 relative overflow-hidden">
-          {/* Subtle gradient border effect */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#aa3bff] to-[#6d28d9] mb-6 shadow-lg shadow-purple-500/20">
-              <LogIn className="w-8 h-8 text-white" />
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        <div className="glass-panel rounded-xl p-6 sm:p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-bold mb-2 shadow-xs">
+              <ShoppingBag className="w-5 h-5" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h1>
-            <p className="text-white/60">Enter your credentials to access your account</p>
+            <h1 className="text-xl font-semibold tracking-tight text-white">Sign In to SmartCart</h1>
+            <p className="text-xs text-white/50">Enter your credentials to access your account</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-red-200">{error}</p>
+            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-start gap-2.5 text-xs text-rose-300">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white/80 ml-1">Email Address</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-purple-400 transition-colors">
-                  <Mail className="w-5 h-5" />
-                </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-white/70">Email Address</label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="email"
-                  className="glass-input pl-11"
+                  className="glass-input !pl-9"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between items-center ml-1">
-                <label className="text-sm font-medium text-white/80">Password</label>
-                <a href="#" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-medium text-white/70">Password</label>
               </div>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-purple-400 transition-colors">
-                  <Lock className="w-5 h-5" />
-                </div>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="password"
-                  className="glass-input pl-11"
+                  className="glass-input !pl-9"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
                 />
               </div>
             </div>
 
             <button 
               type="submit" 
-              className="btn-primary flex items-center justify-center gap-2 mt-8"
+              className="btn-primary flex items-center justify-center gap-2 mt-2"
               disabled={loading}
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
                   <span>Sign In</span>
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-8 text-center text-sm text-white/60">
+          <div className="text-center text-xs text-white/50 pt-2 border-t border-border">
             Don't have an account?{' '}
-            <Link to="/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+            <Link to="/register" className="text-blue-500 hover:text-blue-400 font-medium transition-colors">
               Create an account
             </Link>
           </div>

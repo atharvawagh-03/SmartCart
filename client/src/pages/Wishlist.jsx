@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Heart, Trash2, ShoppingCart, Package } from 'lucide-react';
+import { ArrowLeft, Heart, Trash2, ShoppingCart } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
@@ -24,107 +24,117 @@ const Wishlist = () => {
   if (wishlistLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-border border-t-blue-600 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <div className="max-w-6xl mx-auto">
-        <Link 
-          to="/"
-          className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">Back to Home</span>
-        </Link>
-
-        <div className="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px]" />
-          
-          <div className="relative">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold">My Wishlist</h1>
-              <span className="text-white/60">{wishlistItems.length} items</span>
+    <div className="min-h-screen pb-16">
+      {/* ── Header ── */}
+      <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-border">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-white/60 hover:text-white transition-colors p-1" aria-label="Back to home">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="flex items-center gap-2">
+              <span className="text-base font-semibold tracking-tight text-white">SmartCart</span>
+              <span className="text-white/30 text-xs">/</span>
+              <span className="text-xs font-medium text-white/60">Wishlist</span>
             </div>
+          </div>
+          <span className="text-xs text-white/50">{wishlistItems.length} saved</span>
+        </div>
+      </header>
 
-            {wishlistItems.length === 0 ? (
-              <div className="text-center py-16">
-                <Heart className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-white mb-2">Your wishlist is empty</h3>
-                <p className="text-white/60 mb-6">Save items you love to your wishlist</p>
-                <Link 
-                  to="/products"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500 hover:bg-purple-600 transition-colors text-white font-medium"
-                >
-                  <Package className="w-4 h-4" />
-                  Browse Products
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {wishlistItems.map((item) => (
-                  <div 
-                    key={item._id}
-                    className="bg-black/20 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-colors group flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-16 h-16 bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-white/5">
-                          <img 
-                            src={item.image || "https://placehold.co/600x400/1a1a2e/ffffff?text=No+Image"} 
-                            alt={item.name} 
-                            className="w-full h-full object-contain"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Image+Not+Found";
-                            }}
-                          />
-                        </div>
-                        <button 
-                          onClick={() => removeFromWishlist(item._id)}
-                          className="p-2 rounded-lg hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
-                        >
-                          <Trash2 className="w-4 h-4 text-white/60 hover:text-red-400" />
-                        </button>
-                      </div>
-                      
-                      <h3 className="text-white font-medium mb-2 line-clamp-2">{item.name}</h3>
-                    </div>
-                    
-                    <div>
-                      <div className="flex items-center justify-between mb-4 mt-2">
-                        <span className="text-xl font-bold text-purple-400">{formatCurrency(item.price)}</span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${item.stock > 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                          {item.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                        </span>
-                      </div>
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">
+            Saved Items
+          </h1>
+          <p className="text-xs text-white/50 mt-1">
+            Products saved for future purchases.
+          </p>
+        </div>
 
-                      <button
-                        onClick={() => moveToCart(item._id)}
-                        disabled={item.stock < 1 || movingItems[item._id]}
-                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-colors cursor-pointer ${
-                          item.stock > 0 && !movingItems[item._id]
-                            ? 'bg-purple-500 hover:bg-purple-600 text-white' 
-                            : 'bg-white/5 text-white/40 cursor-not-allowed'
-                        }`}
-                      >
-                        {movingItems[item._id] ? (
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        ) : (
-                          <ShoppingCart className="w-4 h-4" />
-                        )}
-                        <span className="font-medium">Move to Cart</span>
-                      </button>
+        {wishlistItems.length === 0 ? (
+          <div className="glass-panel p-12 text-center rounded-2xl max-w-lg mx-auto space-y-4">
+            <Heart className="w-10 h-10 text-white/20 mx-auto" />
+            <div>
+              <h2 className="text-base font-semibold text-white">Your wishlist is empty</h2>
+              <p className="text-xs text-white/50 mt-1">
+                Save items from the catalog to keep track of them.
+              </p>
+            </div>
+            <Link 
+              to="/products"
+              className="btn-primary !w-auto inline-flex items-center gap-1.5 px-4 py-2 text-xs"
+            >
+              <span>Explore Catalog</span>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {wishlistItems.map((item) => (
+              <div 
+                key={item._id}
+                className="glass-panel rounded-xl overflow-hidden flex flex-col justify-between hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors"
+              >
+                <div>
+                  <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-900 border-b border-border relative flex items-center justify-center">
+                    <img 
+                      src={item.image || "https://placehold.co/600x400/18181b/ffffff?text=Product"} 
+                      alt={item.name} 
+                      className="w-full h-full object-contain p-4"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://placehold.co/600x400/18181b/ffffff?text=Image+Unavailable";
+                      }}
+                    />
+                    <button 
+                      onClick={() => removeFromWishlist(item._id)}
+                      className="absolute top-2.5 right-2.5 p-1.5 rounded-md bg-black/60 text-white/70 hover:text-rose-400 border border-white/10 backdrop-blur-sm transition-colors"
+                      title="Remove from wishlist"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  
+                  <div className="p-4 space-y-1">
+                    <h3 className="text-sm font-medium text-white line-clamp-1">{item.name}</h3>
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <span className="font-semibold text-white tabular-nums">
+                        {formatCurrency(item.price)}
+                      </span>
+                      <span className={`text-[11px] font-medium ${item.stock > 0 ? 'text-emerald-500' : 'text-rose-400'}`}>
+                        {item.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                      </span>
                     </div>
                   </div>
-                ))}
+                </div>
+                
+                <div className="p-4 pt-0">
+                  <button
+                    onClick={() => moveToCart(item._id)}
+                    disabled={item.stock < 1 || movingItems[item._id]}
+                    className="w-full py-2 px-3 rounded-lg border border-border bg-surface hover:bg-surface-hover text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {movingItems[item._id] ? (
+                      <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-3.5 h-3.5 text-white/70" />
+                        <span>Move to Cart</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-            )}
+            ))}
           </div>
-        </div>
-      </div>
+        )}
+      </main>
     </div>
   );
 };

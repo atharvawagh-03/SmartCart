@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Bot, X } from 'lucide-react';
+import { MessageSquare, X } from 'lucide-react';
 import { useAI } from '../../context/AIContext';
 import { useAuth } from '../../context/AuthContext';
 import ChatWindow from './ChatWindow';
@@ -34,7 +34,7 @@ const AIAssistant = () => {
       {/* ── Mobile backdrop ──────────────────────────────────────────── */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[299] bg-black/40 backdrop-blur-sm sm:hidden"
+          className="fixed inset-0 z-[299] bg-black/50 backdrop-blur-xs sm:hidden"
           onClick={handleBackdropClick}
           aria-hidden="true"
         />
@@ -44,26 +44,21 @@ const AIAssistant = () => {
       <div
         ref={panelRef}
         className={[
-          /* positioning */
           'fixed z-[300]',
           'bottom-20 right-4',
           'sm:bottom-20 sm:right-6',
-          /* sizing */
           'w-[calc(100vw-2rem)] max-w-sm',
-          'h-[70vh] max-h-[600px] min-h-[400px]',
-          /* glass panel — matches the rest of the app */
-          'bg-gray-900/95 backdrop-blur-2xl',
-          'border border-white/10',
-          'rounded-2xl shadow-2xl shadow-black/50',
+          'h-[70vh] max-h-[580px] min-h-[400px]',
+          'bg-zinc-950 border border-zinc-800',
+          'rounded-xl shadow-2xl',
           'overflow-hidden',
-          /* open/close transition */
-          'transition-all duration-300 ease-out origin-bottom-right',
+          'transition-all duration-200 ease-out origin-bottom-right',
           isOpen
             ? 'opacity-100 scale-100 pointer-events-auto'
             : 'opacity-0 scale-95 pointer-events-none',
         ].join(' ')}
         role="dialog"
-        aria-label="AI Shopping Assistant"
+        aria-label="Shopping Concierge"
         aria-modal="true"
       >
         <ChatWindow />
@@ -72,38 +67,33 @@ const AIAssistant = () => {
       {/* ── Floating trigger button ───────────────────────────────────── */}
       <button
         onClick={toggleChat}
-        aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
+        aria-label={isOpen ? 'Close Shopping Concierge' : 'Open Shopping Concierge'}
         className={[
           'fixed z-[301]',
           'bottom-4 right-4 sm:bottom-6 sm:right-6',
-          'w-13 h-13',
+          'w-11 h-11',
           'rounded-full',
-          'bg-gradient-to-br from-purple-600 to-blue-600',
+          'bg-zinc-900 text-white dark:bg-white dark:text-zinc-950',
+          'border border-zinc-700/50 dark:border-zinc-300',
           'flex items-center justify-center',
-          'shadow-xl shadow-purple-500/40',
-          'hover:shadow-2xl hover:shadow-purple-500/60',
-          'hover:scale-110 active:scale-95',
-          'transition-all duration-200',
+          'shadow-lg shadow-black/20',
+          'hover:opacity-90 active:scale-95',
+          'transition-all duration-150',
         ].join(' ')}
       >
         {isOpen ? (
-          <X className="w-5 h-5 text-white" />
+          <X className="w-4 h-4" />
         ) : (
-          <Bot className="w-5 h-5 text-white" />
+          <MessageSquare className="w-4 h-4" />
         )}
 
         {/* Unread badge */}
         {!isOpen && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500
-                           text-white text-[10px] font-bold flex items-center justify-center
-                           ring-2 ring-gray-900 animate-bounce">
+          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-600
+                           text-white text-[9px] font-bold flex items-center justify-center
+                           ring-2 ring-zinc-950">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
-        )}
-
-        {/* Pulse ring — shown only when closed and no unread */}
-        {!isOpen && unreadCount === 0 && (
-          <span className="absolute inset-0 rounded-full bg-purple-500/30 animate-ping" />
         )}
       </button>
     </>,

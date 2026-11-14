@@ -9,10 +9,10 @@ const ProductCard = ({ product, onAddToCart }) => {
   const imageUrl = images?.[0] || null;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 overflow-hidden hover:border-purple-500/40 transition-colors">
+    <div className="rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden hover:border-zinc-700 transition-colors">
       {/* Image */}
       {imageUrl && (
-        <div className="h-28 bg-white/5 flex items-center justify-center overflow-hidden">
+        <div className="h-24 bg-zinc-950 flex items-center justify-center overflow-hidden border-b border-zinc-800">
           <img
             src={imageUrl}
             alt={name}
@@ -22,53 +22,44 @@ const ProductCard = ({ product, onAddToCart }) => {
         </div>
       )}
 
-      <div className="p-3 space-y-2">
-        {/* Category badge */}
+      <div className="p-2.5 space-y-1.5">
         {category && (
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/20">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
             {category}
           </span>
         )}
 
-        {/* Name */}
-        <p className="text-xs font-semibold text-white leading-tight line-clamp-2">{name}</p>
+        <p className="text-xs font-medium text-white leading-snug line-clamp-2">{name}</p>
 
-        {/* Price + rating row */}
-        <div className="flex items-center justify-between">
-          <span className="flex items-center gap-0.5 text-sm font-bold text-white">
-            <IndianRupee className="w-3 h-3" />
-            {price?.toLocaleString('en-IN')}
+        <div className="flex items-center justify-between text-xs pt-0.5">
+          <span className="font-semibold text-white tabular-nums">
+            ₹{price?.toLocaleString('en-IN')}
           </span>
           {rating != null && (
-            <span className="flex items-center gap-1 text-[11px] text-amber-400">
-              <Star className="w-3 h-3 fill-amber-400" />
+            <span className="flex items-center gap-0.5 text-[10px] text-amber-400">
+              <Star className="w-2.5 h-2.5 fill-amber-400" />
               {Number(rating).toFixed(1)}
             </span>
           )}
         </div>
 
-        {/* Recommendation reasons */}
         {reasons.length > 0 && (
-          <ul className="space-y-0.5">
+          <ul className="space-y-0.5 pt-0.5">
             {reasons.slice(0, 2).map((r, i) => (
-              <li key={i} className="flex items-start gap-1 text-[10px] text-white/60">
-                <span className="text-purple-400 mt-px">•</span>
-                {r}
+              <li key={i} className="text-[10px] text-zinc-400 line-clamp-1">
+                • {r}
               </li>
             ))}
           </ul>
         )}
 
-        {/* Add to cart */}
         {_id && (
           <button
             onClick={() => onAddToCart(_id)}
-            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg
-                       bg-purple-600/80 hover:bg-purple-600 text-white text-xs font-medium
-                       transition-colors"
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-white text-[11px] font-medium transition-colors mt-1"
           >
-            <ShoppingCart className="w-3 h-3" />
-            Add to Cart
+            <ShoppingCart className="w-3 h-3 text-zinc-400" />
+            <span>Add to Cart</span>
           </button>
         )}
       </div>
@@ -95,13 +86,12 @@ const ChatMessage = ({ message, onFollowUp }) => {
   /* ── User bubble ─────────────────────────────────────────────────────── */
   if (isUser) {
     return (
-      <div className="flex justify-end px-4">
-        <div className="max-w-[80%] space-y-1">
-          <div className="bg-gradient-to-br from-purple-600 to-purple-700 text-white text-sm
-                          px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-md">
+      <div className="flex justify-end px-3">
+        <div className="max-w-[85%] space-y-0.5">
+          <div className="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg rounded-tr-xs leading-relaxed">
             {content}
           </div>
-          <p className="text-[10px] text-white/30 text-right pr-1">{timeStr}</p>
+          <p className="text-[9px] text-zinc-500 text-right pr-0.5">{timeStr}</p>
         </div>
       </div>
     );
@@ -110,12 +100,11 @@ const ChatMessage = ({ message, onFollowUp }) => {
   /* ── Error bubble ────────────────────────────────────────────────────── */
   if (isError) {
     return (
-      <div className="flex items-start gap-3 px-4">
-        <div className="w-7 h-7 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-1">
-          <AlertCircle className="w-4 h-4 text-red-400" />
+      <div className="flex items-start gap-2.5 px-3">
+        <div className="w-6 h-6 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shrink-0 mt-0.5">
+          <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
         </div>
-        <div className="max-w-[85%] bg-red-500/10 border border-red-500/20 text-red-300
-                        text-sm px-4 py-2.5 rounded-2xl rounded-tl-sm">
+        <div className="max-w-[85%] bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs px-3 py-2 rounded-lg leading-relaxed">
           {content}
         </div>
       </div>
@@ -128,25 +117,22 @@ const ChatMessage = ({ message, onFollowUp }) => {
 
   return (
     <div className="space-y-2">
-      {/* Avatar + text bubble */}
-      <div className="flex items-start gap-3 px-4">
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-500
-                        flex items-center justify-center shrink-0 mt-1">
-          <span className="text-white text-[10px] font-bold">AI</span>
+      <div className="flex items-start gap-2.5 px-3">
+        <div className="w-6 h-6 rounded bg-zinc-800 border border-zinc-700 flex items-center justify-center shrink-0 mt-0.5">
+          <span className="text-zinc-300 text-[10px] font-semibold">SC</span>
         </div>
 
-        <div className="max-w-[85%] space-y-1">
-          <div className="bg-white/8 border border-white/10 text-white/90 text-sm
-                          px-4 py-2.5 rounded-2xl rounded-tl-sm leading-relaxed">
+        <div className="max-w-[88%] space-y-0.5">
+          <div className="bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs px-3 py-2 rounded-lg rounded-tl-xs leading-relaxed">
             {content}
           </div>
-          <p className="text-[10px] text-white/30 pl-1">{timeStr}</p>
+          <p className="text-[9px] text-zinc-500 pl-0.5">{timeStr}</p>
         </div>
       </div>
 
       {/* Product cards grid */}
       {products.length > 0 && (
-        <div className="px-4 pl-14">
+        <div className="px-3 pl-11">
           <div className="grid grid-cols-2 gap-2">
             {products.map((product, i) => (
               <ProductCard
@@ -161,7 +147,7 @@ const ChatMessage = ({ message, onFollowUp }) => {
 
       {/* Follow-up suggestion chips */}
       {followUpSuggestions.length > 0 && (
-        <div className="pl-10">
+        <div className="pl-9">
           <FollowUpPrompts suggestions={followUpSuggestions} onSelect={onFollowUp} />
         </div>
       )}

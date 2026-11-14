@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { CheckCircle, AlertCircle, ArrowLeft, Package, CreditCard, MapPin } from 'lucide-react';
+import { CheckCircle2, AlertCircle, ArrowLeft, Package, CreditCard, MapPin } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
 import AddressForm from '../components/AddressForm';
 import { emptyAddress, addressFromProfile, validateAddressForm } from '../utils/address';
@@ -89,26 +89,28 @@ const Checkout = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen p-6 flex flex-col items-center justify-center relative overflow-hidden">
-        <div className="absolute top-[10%] right-[-5%] w-96 h-96 bg-green-600/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="glass-panel p-10 md:p-16 rounded-3xl text-center max-w-lg z-10">
-          <div className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10" />
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="glass-panel p-8 sm:p-10 rounded-2xl text-center max-w-md w-full space-y-4">
+          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-6 h-6" />
           </div>
-          <h2 className="text-3xl font-bold mb-4">Order Confirmed!</h2>
-          <p className="text-white/60 mb-2">
-            Thank you for your purchase. Your order has been placed successfully.
-          </p>
-          <p className="text-white/50 text-sm mb-8">
-            Delivering to {address.city}, {address.pincode}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/orders" className="btn-primary" onClick={() => clearCart()}>
-              View My Orders
+          <div>
+            <h2 className="text-xl font-semibold text-white">Order Confirmed</h2>
+            <p className="text-xs text-white/60 mt-1">
+              Your order has been placed and is being prepared for shipment.
+            </p>
+            <p className="text-xs text-white/40 mt-1">
+              Delivering to {address.city}, {address.pincode}
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <Link to="/orders" className="btn-primary !w-full text-xs" onClick={() => clearCart()}>
+              View Orders
             </Link>
             <Link
               to="/products"
-              className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors font-medium"
+              className="w-full inline-flex items-center justify-center py-2 px-4 rounded-lg border border-border bg-surface hover:bg-surface-hover text-xs font-medium text-white transition-colors"
               onClick={() => clearCart()}
             >
               Continue Shopping
@@ -120,121 +122,119 @@ const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12 relative overflow-hidden">
-      <div className="absolute top-[10%] right-[-5%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[10%] w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
-
-      <main className="max-w-5xl mx-auto z-10 relative">
-        <div className="flex items-center gap-4 mb-8">
-          <Link to="/cart" className="text-white/60 hover:text-white transition-colors">
-            <ArrowLeft className="w-6 h-6" />
-          </Link>
-          <h1 className="text-3xl md:text-4xl font-bold">
-            Secure <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Checkout</span>
-          </h1>
+    <div className="min-h-screen pb-16">
+      {/* ── Header ── */}
+      <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-border">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/cart" className="text-white/60 hover:text-white transition-colors p-1" aria-label="Back to cart">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="flex items-center gap-2">
+              <span className="text-base font-semibold tracking-tight text-white">SmartCart</span>
+              <span className="text-white/30 text-xs">/</span>
+              <span className="text-xs font-medium text-white/60">Checkout</span>
+            </div>
+          </div>
         </div>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-6">
+        <h1 className="text-2xl font-semibold tracking-tight text-white">
+          Complete Your Order
+        </h1>
 
         {error && (
-          <div className="mb-8 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-            <p className="text-sm text-red-200">{error}</p>
+          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-start gap-2.5 text-xs text-rose-300">
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+            <span>{error}</span>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="glass-panel p-6 rounded-3xl">
-              <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-green-400" />
-                Delivery Address
-              </h3>
-              <p className="text-white/50 text-sm mb-6">
-                Enter where you want your order delivered. Saved address loads automatically next time.
-              </p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* ── Delivery Details ── */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="glass-panel p-5 sm:p-6 rounded-xl space-y-4">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <MapPin className="w-4 h-4 text-white/60" />
+                <h2 className="text-sm font-semibold tracking-tight text-white">
+                  Shipping Address
+                </h2>
+              </div>
 
               {loadingAddress ? (
-                <div className="flex justify-center py-12">
-                  <div className="w-8 h-8 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+                <div className="flex justify-center py-8">
+                  <div className="w-5 h-5 border-2 border-border border-t-blue-600 rounded-full animate-spin" />
                 </div>
               ) : (
-                <>
+                <div className="space-y-4">
                   <AddressForm address={address} onChange={setAddress} disabled={loading} />
-                  <label className="mt-5 flex items-center gap-3 cursor-pointer group">
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs text-white/70 hover:text-white">
                     <input
                       type="checkbox"
                       checked={saveAddress}
                       onChange={(e) => setSaveAddress(e.target.checked)}
-                      className="w-4 h-4 rounded border-white/20 bg-black/20 text-purple-500 focus:ring-purple-500/50"
+                      className="w-4 h-4 rounded border-border text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-white/70 group-hover:text-white transition-colors">
-                      Save this address for future orders
-                    </span>
+                    <span>Save this address for future orders</span>
                   </label>
-                </>
+                </div>
               )}
             </div>
 
-            <div className="glass-panel p-6 rounded-3xl">
-              <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                <Package className="w-5 h-5 text-purple-400" />
-                Order Summary
-              </h3>
-              <div className="space-y-4 max-h-[320px] overflow-y-auto pr-2">
+            {/* Items in order */}
+            <div className="glass-panel p-5 rounded-xl space-y-3">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <Package className="w-4 h-4 text-white/60" />
+                <h2 className="text-sm font-semibold tracking-tight text-white">
+                  Items to Ship ({cart?.items?.length || 0})
+                </h2>
+              </div>
+              <div className="divide-y divide-border max-h-60 overflow-y-auto pr-1 custom-scrollbar">
                 {cart?.items?.map((item) => (
-                  <div key={item.product._id} className="flex gap-4 items-center bg-white/5 p-3 rounded-2xl">
-                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-white/10 flex-shrink-0">
-                      {item.product.image ? (
-                        <img
-                          src={item.product.image}
-                          alt={item.product.name}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="w-6 h-6 text-white/30" />
-                        </div>
-                      )}
+                  <div key={item.product._id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                    <div className="min-w-0">
+                      <p className="font-medium text-white truncate">{item.product.name}</p>
+                      <p className="text-white/50">Qty: {item.quantity}</p>
                     </div>
-                    <div className="flex-grow min-w-0">
-                      <h4 className="font-medium text-sm line-clamp-1">{item.product.name}</h4>
-                      <p className="text-white/50 text-xs mt-1">Qty: {item.quantity}</p>
-                    </div>
-                    <div className="font-medium shrink-0">
+                    <span className="font-medium text-white tabular-nums shrink-0">
                       {formatCurrency(item.product.price * item.quantity)}
-                    </div>
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div>
-            <div className="glass-panel p-6 md:p-8 rounded-3xl lg:sticky lg:top-6">
-              <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-blue-400" />
-                Payment Details
-              </h3>
-
-              <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-6 text-sm text-blue-200">
-                Demo checkout — no real payment. Stock is reduced when you place the order.
+          {/* ── Summary & Payment ── */}
+          <div className="lg:col-span-1">
+            <div className="glass-panel p-5 rounded-xl space-y-4 sticky top-20">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <CreditCard className="w-4 h-4 text-white/60" />
+                <h2 className="text-sm font-semibold tracking-tight text-white">
+                  Payment Summary
+                </h2>
               </div>
 
-              <div className="space-y-4 mb-6 text-white/80">
+              <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-xs text-blue-400">
+                Test checkout: No payment information required. Inventory is reserved immediately.
+              </div>
+
+              <div className="space-y-2 text-xs text-white/70">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium">{formatCurrency(cartTotal)}</span>
+                  <span className="font-medium text-white tabular-nums">{formatCurrency(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span className="text-green-400">Free</span>
+                  <span className="font-medium text-emerald-500">Free</span>
                 </div>
               </div>
 
-              <div className="border-t border-white/10 pt-4 mb-8">
-                <div className="flex justify-between items-center text-lg">
-                  <span className="font-bold">Total</span>
-                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 text-3xl">
+              <div className="border-t border-border pt-3">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-sm font-medium text-white">Total</span>
+                  <span className="text-lg font-bold text-white tabular-nums">
                     {formatCurrency(cartTotal)}
                   </span>
                 </div>
@@ -247,7 +247,7 @@ const Checkout = () => {
                 className="btn-primary w-full flex justify-center items-center gap-2"
               >
                 {loading ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <span>Place Order</span>
                 )}
