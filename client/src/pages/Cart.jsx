@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/currency';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Cart = () => {
   const { cart, loading, updateQuantity, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
@@ -32,9 +33,12 @@ const Cart = () => {
             </div>
           </div>
 
-          <Link to="/products" className="text-xs text-white/60 hover:text-white transition-colors">
-            Continue shopping
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/products" className="text-xs text-white/60 hover:text-white transition-colors">
+              Continue shopping
+            </Link>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

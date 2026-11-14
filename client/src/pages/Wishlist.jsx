@@ -4,6 +4,7 @@ import { formatCurrency } from '../utils/currency';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { useState } from 'react';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Wishlist = () => {
   const { wishlist, loading: wishlistLoading, removeFromWishlist } = useWishlist();
@@ -44,7 +45,10 @@ const Wishlist = () => {
               <span className="text-xs font-medium text-white/60">Wishlist</span>
             </div>
           </div>
-          <span className="text-xs text-white/50">{wishlistItems.length} saved</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-white/50">{wishlistItems.length} saved</span>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

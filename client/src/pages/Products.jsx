@@ -6,6 +6,7 @@ import { ShoppingBag, Search, ShoppingCart, Check, Plus, ClipboardList, Heart, A
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/currency';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Products = () => {
   const { user } = useAuth();
@@ -132,6 +133,7 @@ const Products = () => {
                 </span>
               )}
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       </header>

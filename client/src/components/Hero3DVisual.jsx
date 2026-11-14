@@ -553,7 +553,7 @@ const Hero3DVisual = () => {
       
       {/* 3D Model Spec Badges */}
       <div className="absolute top-3 right-3 pointer-events-none hidden sm:flex items-center gap-2">
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/40 text-blue-400 border border-blue-500/20 backdrop-blur-xs">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/70 dark:bg-black/40 text-blue-600 dark:text-blue-400 border border-blue-500/20 backdrop-blur-xs">
           SMARTCART · LOADED
         </span>
       </div>
@@ -561,8 +561,8 @@ const Hero3DVisual = () => {
       <div className="absolute bottom-3 right-3 pointer-events-none">
         <span className={`text-[10px] font-mono px-2 py-1 rounded-md border transition-colors ${
           isInteracting
-            ? 'bg-blue-600/20 text-blue-400 border-blue-500/30'
-            : 'bg-black/50 text-white/50 border-white/10 backdrop-blur-xs'
+            ? 'bg-blue-600/20 text-blue-600 dark:text-blue-400 border-blue-500/30'
+            : 'bg-white/80 dark:bg-black/50 text-slate-700 dark:text-white/50 border-slate-200 dark:border-white/10 backdrop-blur-xs'
         }`}>
           {isInteracting ? 'ROTATING MODEL' : 'DRAG TO ROTATE 360°'}
         </span>

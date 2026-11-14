@@ -16,6 +16,7 @@ import {
 import { useSocket } from '../context/SocketContext';
 import { formatCurrency } from '../utils/currency';
 import { formatAddressLines } from '../utils/address';
+import ThemeToggle from '../components/ThemeToggle';
 
 const TRACKING_STEPS = ['Pending', 'Processing', 'Shipped', 'Delivered'];
 
@@ -224,18 +225,21 @@ const MyOrders = () => {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setLoading(true);
-              fetchOrders();
-            }}
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover text-xs font-medium text-white/80 transition-colors disabled:opacity-50"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setLoading(true);
+                fetchOrders();
+              }}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover text-xs font-medium text-white/80 transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+              <span>Refresh</span>
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

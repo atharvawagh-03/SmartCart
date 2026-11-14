@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Search, X, Trash2 } from 'lucide-react';
+import ThemeToggle from '../components/ThemeToggle';
 
 const RecentSearches = () => {
   const [searches, setSearches] = useState(() => {
@@ -52,14 +53,17 @@ const RecentSearches = () => {
               <span className="text-xs font-medium text-white/60">Recent Searches</span>
             </div>
           </div>
-          {searches.length > 0 && (
-            <button 
-              onClick={clearAllSearches}
-              className="text-xs font-medium text-rose-400 hover:text-rose-300 transition-colors"
-            >
-              Clear All
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {searches.length > 0 && (
+              <button 
+                onClick={clearAllSearches}
+                className="text-xs font-medium text-rose-400 hover:text-rose-300 transition-colors"
+              >
+                Clear All
+              </button>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

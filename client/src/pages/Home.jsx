@@ -35,6 +35,7 @@ import {
 import RecommendedProducts from '../components/RecommendedProducts';
 import UserMenu from '../components/UserMenu';
 import Hero3DVisual from '../components/Hero3DVisual';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Home = () => {
   const { user } = useAuth();
@@ -127,6 +128,7 @@ const Home = () => {
                 </span>
               )}
             </Link>
+            <ThemeToggle />
             {user ? (
               <UserMenu />
             ) : (
@@ -207,9 +209,9 @@ const Home = () => {
 
             {/* Right 3D Visual Column */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="w-full rounded-2xl border border-border/80 bg-zinc-950/60 shadow-inner overflow-hidden relative">
+              <div className="w-full rounded-2xl border border-border bg-slate-100/70 dark:bg-zinc-950/60 shadow-inner overflow-hidden relative">
                 {/* Visual coordinate markings */}
-                <div className="absolute top-3 left-3 text-[10px] font-mono text-white/30 z-10 pointer-events-none">
+                <div className="absolute top-3 left-3 text-[10px] font-mono text-zinc-500 dark:text-white/30 z-10 pointer-events-none">
                   SC-3D // INTERACTIVE
                 </div>
                 

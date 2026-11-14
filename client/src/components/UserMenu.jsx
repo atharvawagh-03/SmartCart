@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { User, LogOut, Package, Heart, Clock, Settings, ChevronDown, X } from 'lucide-react';
+import { User, LogOut, Package, Heart, Clock, Settings, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
   const triggerRef = useRef(null);
@@ -100,6 +102,18 @@ const UserMenu = () => {
                   </div>
                 </Link>
               ))}
+            </div>
+
+            <div className="p-1.5 border-t border-border flex items-center justify-between px-3 py-2">
+              <span className="text-xs text-white/60">Display Mode</span>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="flex items-center gap-1.5 px-2 py-1 rounded-md border border-border bg-surface hover:bg-surface-hover text-xs font-medium text-white transition-colors cursor-pointer"
+              >
+                {isDark ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-slate-700" />}
+                <span>{isDark ? 'Dark' : 'Light'}</span>
+              </button>
             </div>
 
             <div className="p-1.5 border-t border-border">

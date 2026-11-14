@@ -4,6 +4,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { Users, ShoppingBag, IndianRupee, ArrowUpRight, Package, Plus, Search, ExternalLink, Trash2, Edit2, Download, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatCurrency, formatCurrencyCompact } from '../utils/currency';
+import ThemeToggle from '../components/ThemeToggle';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -239,6 +240,7 @@ const AdminDashboard = () => {
                 Inventory ({allProducts.length})
               </button>
             </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>

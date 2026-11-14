@@ -5,6 +5,7 @@ import axios from 'axios';
 import { User, Shield, ArrowLeft, Edit, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
 import AddressForm from '../components/AddressForm';
 import { emptyAddress, addressFromProfile, validateAddressForm, formatAddressLines } from '../utils/address';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -79,6 +80,7 @@ const Profile = () => {
               <span className="text-xs font-medium text-white/60">Profile</span>
             </div>
           </div>
+          <ThemeToggle />
         </div>
       </header>
 
