@@ -83,22 +83,22 @@ const Wishlist = () => {
             {wishlistItems.map((item) => (
               <div 
                 key={item._id}
-                className="glass-panel rounded-xl overflow-hidden flex flex-col justify-between hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors"
+                className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-zinc-700 transition-colors"
               >
                 <div>
-                  <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-900 border-b border-border relative flex items-center justify-center">
+                  <div className="aspect-[4/3] bg-slate-50 dark:bg-zinc-950 border-b border-slate-100 dark:border-zinc-800/80 relative flex items-center justify-center">
                     <img 
-                      src={item.image || "https://placehold.co/600x400/18181b/ffffff?text=Product"} 
+                      src={item.image || "https://placehold.co/600x400/f8fafc/64748b?text=Product"} 
                       alt={item.name} 
                       className="w-full h-full object-contain p-4"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "https://placehold.co/600x400/18181b/ffffff?text=Image+Unavailable";
+                        e.target.src = "https://placehold.co/600x400/f8fafc/64748b?text=Image+Unavailable";
                       }}
                     />
                     <button 
                       onClick={() => removeFromWishlist(item._id)}
-                      className="absolute top-2.5 right-2.5 p-1.5 rounded-md bg-black/60 text-white/70 hover:text-rose-400 border border-white/10 backdrop-blur-sm transition-colors"
+                      className="absolute top-2.5 right-2.5 p-1.5 rounded-md bg-white/95 dark:bg-black/75 text-slate-500 dark:text-white/70 hover:text-rose-500 border border-slate-200 dark:border-white/10 shadow-xs backdrop-blur-xs transition-colors cursor-pointer"
                       title="Remove from wishlist"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -106,12 +106,12 @@ const Wishlist = () => {
                   </div>
                   
                   <div className="p-4 space-y-1">
-                    <h3 className="text-sm font-medium text-white line-clamp-1">{item.name}</h3>
+                    <h3 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1">{item.name}</h3>
                     <div className="flex items-center justify-between text-xs pt-1">
-                      <span className="font-semibold text-white tabular-nums">
+                      <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
                         {formatCurrency(item.price)}
                       </span>
-                      <span className={`text-[11px] font-medium ${item.stock > 0 ? 'text-emerald-500' : 'text-rose-400'}`}>
+                      <span className={`text-[11px] font-medium ${item.stock > 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-rose-500 dark:text-rose-400'}`}>
                         {item.stock > 0 ? 'In Stock' : 'Out of Stock'}
                       </span>
                     </div>
@@ -122,13 +122,13 @@ const Wishlist = () => {
                   <button
                     onClick={() => moveToCart(item._id)}
                     disabled={item.stock < 1 || movingItems[item._id]}
-                    className="w-full py-2 px-3 rounded-lg border border-border bg-surface hover:bg-surface-hover text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full py-2 px-3 rounded-lg border border-slate-200 dark:border-zinc-700/80 bg-slate-50 hover:bg-slate-100 text-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-750 dark:text-white text-xs font-medium flex items-center justify-center gap-1.5 transition-colors shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {movingItems[item._id] ? (
-                      <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-3.5 h-3.5 border-2 border-slate-400 dark:border-white/30 border-t-slate-800 dark:border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        <ShoppingCart className="w-3.5 h-3.5 text-white/70" />
+                        <ShoppingCart className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
                         <span>Move to Cart</span>
                       </>
                     )}
