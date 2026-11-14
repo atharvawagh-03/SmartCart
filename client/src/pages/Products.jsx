@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ShoppingBag, Search, ShoppingCart, Check, Plus, ClipboardList, Heart, ArrowLeft } from 'lucide-react';
@@ -19,6 +19,8 @@ const Products = () => {
   const { addToCart, cartCount } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (location.state?.category) {
       setSelectedCategory(location.state.category);
@@ -26,6 +28,10 @@ const Products = () => {
   }, [location.state]);
 
   const handleToggleWishlist = async (productId) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     if (isInWishlist(productId)) {
       await removeFromWishlist(productId);
     } else {
@@ -50,6 +56,10 @@ const Products = () => {
   }, []);
 
   const handleAddToCart = async (productId) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     try {
       await axios.post(`/api/products/${productId}/view`);
     } catch (e) {

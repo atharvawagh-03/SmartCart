@@ -5,9 +5,10 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/currency';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const RecommendedProducts = () => {
+  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState({});
@@ -16,6 +17,10 @@ const RecommendedProducts = () => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const handleToggleWishlist = async (productId) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     if (isInWishlist(productId)) {
       await removeFromWishlist(productId);
     } else {
@@ -45,6 +50,10 @@ const RecommendedProducts = () => {
   }, [user]);
 
   const handleAddToCart = async (productId) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     try {
       await axios.post(`/api/products/${productId}/view`);
     } catch (e) {

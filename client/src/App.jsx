@@ -51,14 +51,14 @@ function App() {
                   <AIAssistant />
 
                   <Routes>
-                    {/* Public */}
+                    {/* Public Routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/products" element={<Products />} />
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
-                    {/* Protected */}
+                    {/* Protected User Routes */}
                     <Route element={<ProtectedRoute />}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/products" element={<Products />} />
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/checkout" element={<Checkout />} />
                       <Route path="/profile" element={<Profile />} />
