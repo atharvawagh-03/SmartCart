@@ -15,8 +15,9 @@ const Hero3DVisual = () => {
     const width = container.clientWidth;
     const height = container.clientHeight || 420;
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 7.5);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+    camera.position.set(2.8, 2.2, 5.8);
+    camera.lookAt(0, 0.2, 0);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -26,152 +27,394 @@ const Hero3DVisual = () => {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.3;
 
     container.appendChild(renderer.domElement);
 
-    // ── Lighting ──
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    // ── Studio Lighting ──
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0x3b82f6, 3.5);
-    keyLight.position.set(5, 5, 5);
+    // Key studio light (cool daylight)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.0);
+    keyLight.position.set(6, 8, 5);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0x60a5fa, 2.0);
-    fillLight.position.set(-5, -2, -3);
+    // Fill light (cobalt tint to reflect brand identity)
+    const fillLight = new THREE.DirectionalLight(0x3b82f6, 2.2);
+    fillLight.position.set(-6, 3, -2);
     scene.add(fillLight);
 
-    const rimLight = new THREE.PointLight(0xffffff, 4.0, 15);
-    rimLight.position.set(0, 4, 3);
+    // Rim light from rear-top
+    const rimLight = new THREE.PointLight(0x93c5fd, 3.5, 20);
+    rimLight.position.set(0, 5, -4);
     scene.add(rimLight);
 
-    // ── 3D Sculptural SmartCart Centerpiece ──
-    const rootGroup = new THREE.Group();
-    scene.add(rootGroup);
+    // ── Ground Contact Shadow Plane ──
+    const shadowCanvas = document.createElement('canvas');
+    shadowCanvas.width = 128;
+    shadowCanvas.height = 128;
+    const ctx = shadowCanvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(64, 64, 10, 64, 64, 60);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.55)');
+    gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.2)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 128, 128);
 
-    // Core Cart Basket Geometry (Precision wireframe & translucent shell)
-    const cartGroup = new THREE.Group();
-    rootGroup.add(cartGroup);
-
-    // Outer wire basket
-    const basketGeo = new THREE.BoxGeometry(2.4, 1.8, 1.8);
-    const wireGeo = new THREE.WireframeGeometry(basketGeo);
-    const wireMat = new THREE.LineBasicMaterial({
-      color: 0x3b82f6,
+    const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
+    const shadowGeo = new THREE.PlaneGeometry(3.8, 3.8);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      map: shadowTexture,
       transparent: true,
-      opacity: 0.85,
-      linewidth: 1.5,
+      opacity: 0.8,
+      depthWrite: false,
     });
-    const wireframeMesh = new THREE.LineSegments(wireGeo, wireMat);
-    cartGroup.add(wireframeMesh);
+    const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+    shadowMesh.rotation.x = -Math.PI / 2;
+    shadowMesh.position.y = -1.35;
+    scene.add(shadowMesh);
 
-    // Inner translucent faceted crystal core
-    const coreGeo = new THREE.IcosahedronGeometry(0.85, 1);
-    const coreMat = new THREE.MeshPhysicalMaterial({
-      color: 0x1d4ed8,
-      emissive: 0x1e3a8a,
-      emissiveIntensity: 0.3,
-      metalness: 0.8,
-      roughness: 0.15,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1,
-      wireframe: false,
+    // ── Materials ──
+    const chromeMat = new THREE.MeshStandardMaterial({
+      color: 0xd4d4d8,
+      metalness: 0.95,
+      roughness: 0.18,
     });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-    cartGroup.add(coreMesh);
 
-    // Sculptural Wheels / Orbiting nodes
-    const wheelGeo = new THREE.TorusGeometry(0.3, 0.08, 16, 32);
-    const wheelMat = new THREE.MeshStandardMaterial({
-      color: 0xe2e8f0,
+    const wireMat = new THREE.MeshStandardMaterial({
+      color: 0xa1a1aa,
       metalness: 0.9,
-      roughness: 0.2,
+      roughness: 0.25,
     });
 
-    const wheelPositions = [
-      [-1.1, -1.2, 0.9],
-      [1.1, -1.2, 0.9],
-      [-1.1, -1.2, -0.9],
-      [1.1, -1.2, -0.9],
-    ];
-
-    wheelPositions.forEach((pos) => {
-      const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-      wheel.position.set(...pos);
-      wheel.rotation.y = Math.PI / 2;
-      cartGroup.add(wheel);
+    const brandBlueMat = new THREE.MeshStandardMaterial({
+      color: 0x2563eb,
+      metalness: 0.3,
+      roughness: 0.25,
     });
 
-    // Sculptural Handle
-    const handleCurve = new THREE.CubicBezierCurve3(
-      new THREE.Vector3(-1.2, 1.1, -0.9),
-      new THREE.Vector3(-1.6, 1.3, -0.5),
-      new THREE.Vector3(-1.6, 1.3, 0.5),
-      new THREE.Vector3(-1.2, 1.1, 0.9)
-    );
-    const handleGeo = new THREE.TubeGeometry(handleCurve, 20, 0.06, 8, false);
-    const handleMat = new THREE.MeshStandardMaterial({
-      color: 0x93c5fd,
-      metalness: 0.8,
-      roughness: 0.2,
+    const rubberMat = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      metalness: 0.1,
+      roughness: 0.85,
     });
-    const handleMesh = new THREE.Mesh(handleGeo, handleMat);
-    cartGroup.add(handleMesh);
 
-    // Orbital Gyro Ring 1
-    const ring1Geo = new THREE.TorusGeometry(2.3, 0.02, 16, 100);
-    const ring1Mat = new THREE.MeshStandardMaterial({
-      color: 0x60a5fa,
-      metalness: 0.9,
-      roughness: 0.3,
-      transparent: true,
-      opacity: 0.6,
+    const packageKraftMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      roughness: 0.7,
+      metalness: 0.05,
     });
-    const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
-    ring1.rotation.x = Math.PI / 3;
-    rootGroup.add(ring1);
 
-    // Orbital Gyro Ring 2
-    const ring2Geo = new THREE.TorusGeometry(2.6, 0.015, 16, 100);
-    const ring2Mat = new THREE.MeshStandardMaterial({
-      color: 0x94a3b8,
-      metalness: 0.8,
+    const packageTapeMat = new THREE.MeshStandardMaterial({
+      color: 0x2563eb,
       roughness: 0.4,
-      transparent: true,
-      opacity: 0.4,
+      metalness: 0.2,
     });
-    const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
-    ring2.rotation.y = Math.PI / 4;
-    ring2.rotation.z = Math.PI / 6;
-    rootGroup.add(ring2);
 
-    // Precision Floating Particles
-    const particleCount = 40;
-    const particleGeo = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particleCount * 3);
+    const gadgetMat = new THREE.MeshStandardMaterial({
+      color: 0x09090b,
+      metalness: 0.9,
+      roughness: 0.15,
+    });
 
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 8;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 6;
-      particlePositions[i + 2] = (Math.random() - 0.5) * 4;
+    const screenMat = new THREE.MeshBasicMaterial({
+      color: 0x1d4ed8,
+    });
+
+    // ── Main Cart Assembly Group ──
+    const cartRoot = new THREE.Group();
+    scene.add(cartRoot);
+
+    // 1. BASKET PERIMETER TOP RIM
+    const topRimGeo = new THREE.BoxGeometry(2.1, 0.05, 1.5);
+    const topRimWire = new THREE.WireframeGeometry(topRimGeo);
+    const topRim = new THREE.LineSegments(
+      topRimWire,
+      new THREE.LineBasicMaterial({ color: 0x60a5fa, linewidth: 2 })
+    );
+    topRim.position.set(0, 0.8, 0);
+    cartRoot.add(topRim);
+
+    // Solid top tube rail
+    const rimPoints = [
+      new THREE.Vector3(-1.05, 0.8, -0.75),
+      new THREE.Vector3(1.05, 0.8, -0.75),
+      new THREE.Vector3(1.05, 0.8, 0.75),
+      new THREE.Vector3(-1.05, 0.8, 0.75),
+      new THREE.Vector3(-1.05, 0.8, -0.75),
+    ];
+    const rimCurve = new THREE.CatmullRomCurve3(rimPoints, true);
+    const rimTubeGeo = new THREE.TubeGeometry(rimCurve, 32, 0.03, 8, true);
+    const rimTube = new THREE.Mesh(rimTubeGeo, chromeMat);
+    cartRoot.add(rimTube);
+
+    // 2. BASKET BOTTOM FLOOR
+    const floorPoints = [
+      new THREE.Vector3(-0.9, -0.2, -0.65),
+      new THREE.Vector3(0.9, -0.2, -0.65),
+      new THREE.Vector3(0.9, -0.2, 0.65),
+      new THREE.Vector3(-0.9, -0.2, 0.65),
+      new THREE.Vector3(-0.9, -0.2, -0.65),
+    ];
+    const floorCurve = new THREE.CatmullRomCurve3(floorPoints, true);
+    const floorTubeGeo = new THREE.TubeGeometry(floorCurve, 32, 0.025, 8, true);
+    const floorTube = new THREE.Mesh(floorTubeGeo, chromeMat);
+    cartRoot.add(floorTube);
+
+    // 3. VERTICAL BASKET WIRE RIBS
+    const wireCylGeo = new THREE.CylinderGeometry(0.012, 0.012, 1.0, 6);
+    
+    // Front & Back wall wire ribs
+    for (let x = -0.95; x <= 0.95; x += 0.18) {
+      // Front wire
+      const wireF = new THREE.Mesh(wireCylGeo, wireMat);
+      wireF.position.set(x, 0.3, 0.7);
+      cartRoot.add(wireF);
+
+      // Back wire
+      const wireB = new THREE.Mesh(wireCylGeo, wireMat);
+      wireB.position.set(x, 0.3, -0.7);
+      cartRoot.add(wireB);
     }
 
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0x3b82f6,
-      size: 0.06,
-      transparent: true,
-      opacity: 0.6,
-    });
-    const particles = new THREE.Points(particleGeo, particleMat);
-    scene.add(particles);
+    // Side wall wire ribs
+    const sideWireGeo = new THREE.CylinderGeometry(0.012, 0.012, 1.0, 6);
+    for (let z = -0.65; z <= 0.65; z += 0.18) {
+      const wireL = new THREE.Mesh(sideWireGeo, wireMat);
+      wireL.position.set(-0.98, 0.3, z);
+      cartRoot.add(wireL);
 
-    // ── Mouse Interactivity & Smoothing ──
+      const wireR = new THREE.Mesh(sideWireGeo, wireMat);
+      wireR.position.set(0.98, 0.3, z);
+      cartRoot.add(wireR);
+    }
+
+    // Horizontal wire rungs running around the basket
+    const levels = [0.05, 0.3, 0.55];
+    levels.forEach((lvl) => {
+      const rungPoints = [
+        new THREE.Vector3(-0.98, lvl, -0.7),
+        new THREE.Vector3(0.98, lvl, -0.7),
+        new THREE.Vector3(0.98, lvl, 0.7),
+        new THREE.Vector3(-0.98, lvl, 0.7),
+        new THREE.Vector3(-0.98, lvl, -0.7),
+      ];
+      const rungCurve = new THREE.CatmullRomCurve3(rungPoints, true);
+      const rungGeo = new THREE.TubeGeometry(rungCurve, 32, 0.012, 6, true);
+      const rung = new THREE.Mesh(rungGeo, wireMat);
+      cartRoot.add(rung);
+    });
+
+    // 4. ERGONOMIC PUSH HANDLE
+    const handleStrutL = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 0.6, 8),
+      chromeMat
+    );
+    handleStrutL.position.set(-1.05, 1.0, -0.55);
+    handleStrutL.rotation.z = 0.35;
+    cartRoot.add(handleStrutL);
+
+    const handleStrutR = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 0.6, 8),
+      chromeMat
+    );
+    handleStrutR.position.set(-1.05, 1.0, 0.55);
+    handleStrutR.rotation.z = 0.35;
+    cartRoot.add(handleStrutR);
+
+    // Crossbar handle with blue grip
+    const handleBar = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.035, 0.035, 1.4, 16),
+      brandBlueMat
+    );
+    handleBar.position.set(-1.22, 1.25, 0);
+    handleBar.rotation.x = Math.PI / 2;
+    cartRoot.add(handleBar);
+
+    // 5. LOWER CHASSIS & WHEEL BASE
+    const legL = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.03, 0.03, 1.1, 8),
+      chromeMat
+    );
+    legL.position.set(0.7, -0.7, 0.6);
+    legL.rotation.z = 0.15;
+    cartRoot.add(legL);
+
+    const legR = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.03, 0.03, 1.1, 8),
+      chromeMat
+    );
+    legR.position.set(0.7, -0.7, -0.6);
+    legR.rotation.z = 0.15;
+    cartRoot.add(legR);
+
+    const legBackL = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.03, 0.03, 1.1, 8),
+      chromeMat
+    );
+    legBackL.position.set(-0.7, -0.7, 0.6);
+    legBackL.rotation.z = -0.15;
+    cartRoot.add(legBackL);
+
+    const legBackR = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.03, 0.03, 1.1, 8),
+      chromeMat
+    );
+    legBackR.position.set(-0.7, -0.7, -0.6);
+    legBackR.rotation.z = -0.15;
+    cartRoot.add(legBackR);
+
+    // Lower Tray Rack
+    const bottomRack = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 0.02, 1.1),
+      chromeMat
+    );
+    bottomRack.position.set(0, -1.05, 0);
+    cartRoot.add(bottomRack);
+
+    // 6. FOUR CASTER WHEELS
+    const wheelPositions = [
+      [0.85, -1.2, 0.6],
+      [0.85, -1.2, -0.6],
+      [-0.85, -1.2, 0.6],
+      [-0.85, -1.2, -0.6],
+    ];
+
+    const wheelMeshes = [];
+
+    wheelPositions.forEach(([x, y, z]) => {
+      const wheelGroup = new THREE.Group();
+      wheelGroup.position.set(x, y, z);
+
+      // Caster fork bracket
+      const fork = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.04, 0.04, 0.15, 8),
+        chromeMat
+      );
+      fork.position.set(0, 0.1, 0);
+      wheelGroup.add(fork);
+
+      // Tire (rubber rim)
+      const tire = new THREE.Mesh(
+        new THREE.TorusGeometry(0.12, 0.04, 12, 24),
+        rubberMat
+      );
+      tire.rotation.y = Math.PI / 2;
+      wheelGroup.add(tire);
+
+      // Center chrome hub
+      const hub = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.06, 0.06, 0.08, 12),
+        chromeMat
+      );
+      hub.rotation.z = Math.PI / 2;
+      wheelGroup.add(hub);
+
+      cartRoot.add(wheelGroup);
+      wheelMeshes.push(tire);
+    });
+
+    // 7. REAL SHOPPING ITEMS SITTING INSIDE THE CART
+
+    // Item A: E-Commerce Delivery Parcel Box with Brand Tape
+    const parcelGroup = new THREE.Group();
+    parcelGroup.position.set(-0.25, 0.35, 0.1);
+    parcelGroup.rotation.set(0.1, 0.3, -0.15);
+
+    const parcelBox = new THREE.Mesh(
+      new THREE.BoxGeometry(0.85, 0.65, 0.65),
+      packageKraftMat
+    );
+    parcelGroup.add(parcelBox);
+
+    const tapeH = new THREE.Mesh(
+      new THREE.BoxGeometry(0.86, 0.12, 0.66),
+      packageTapeMat
+    );
+    parcelGroup.add(tapeH);
+
+    const tapeV = new THREE.Mesh(
+      new THREE.BoxGeometry(0.12, 0.66, 0.66),
+      packageTapeMat
+    );
+    parcelGroup.add(tapeV);
+
+    cartRoot.add(parcelGroup);
+
+    // Item B: Sleek Flagship Smartphone with Glowing Bezel
+    const phoneGroup = new THREE.Group();
+    phoneGroup.position.set(0.4, 0.45, -0.15);
+    phoneGroup.rotation.set(-0.25, 0.5, 0.2);
+
+    const phoneBody = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.85, 0.05),
+      gadgetMat
+    );
+    phoneGroup.add(phoneBody);
+
+    const phoneScreen = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.38, 0.78),
+      screenMat
+    );
+    phoneScreen.position.z = 0.026;
+    phoneGroup.add(phoneScreen);
+
+    // Camera module bump on rear
+    const cameraBump = new THREE.Mesh(
+      new THREE.BoxGeometry(0.15, 0.15, 0.02),
+      gadgetMat
+    );
+    cameraBump.position.set(-0.1, 0.3, -0.035);
+    phoneGroup.add(cameraBump);
+
+    cartRoot.add(phoneGroup);
+
+    // Item C: Over-Ear Audio Headphones Box
+    const audioBox = new THREE.Mesh(
+      new THREE.BoxGeometry(0.65, 0.5, 0.45),
+      new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        metalness: 0.5,
+        roughness: 0.3,
+      })
+    );
+    audioBox.position.set(0.2, 0.15, 0.25);
+    audioBox.rotation.set(0.05, -0.4, 0.1);
+    cartRoot.add(audioBox);
+
+    // 8. FLOATING KINETIC SMART BADGE (Interactive Verified Tag)
+    const badgeGroup = new THREE.Group();
+    badgeGroup.position.set(1.2, 0.9, 0.6);
+
+    const badgeRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.25, 0.025, 12, 32),
+      new THREE.MeshStandardMaterial({
+        color: 0x3b82f6,
+        metalness: 0.8,
+        roughness: 0.2,
+      })
+    );
+    badgeGroup.add(badgeRing);
+
+    const badgeGem = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.14, 0),
+      new THREE.MeshPhysicalMaterial({
+        color: 0x60a5fa,
+        emissive: 0x2563eb,
+        emissiveIntensity: 0.5,
+        metalness: 0.9,
+        roughness: 0.1,
+      })
+    );
+    badgeGroup.add(badgeGem);
+    cartRoot.add(badgeGroup);
+
+    // ── Mouse & Touch Drag Interaction ──
     let mouseX = 0;
     let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
+    let targetX = 0.45; // Default aesthetic 3/4 front angle
+    let targetY = 0.15;
     let isDragging = false;
     let previousPointerX = 0;
     let previousPointerY = 0;
@@ -184,13 +427,13 @@ const Hero3DVisual = () => {
       if (isDragging) {
         const deltaX = e.clientX - previousPointerX;
         const deltaY = e.clientY - previousPointerY;
-        targetX += deltaX * 0.01;
-        targetY += deltaY * 0.01;
+        targetX += deltaX * 0.008;
+        targetY += deltaY * 0.008;
         previousPointerX = e.clientX;
         previousPointerY = e.clientY;
       } else {
-        mouseX = x * 0.4;
-        mouseY = y * 0.3;
+        mouseX = x * 0.25;
+        mouseY = y * 0.15;
       }
     };
 
@@ -222,33 +465,37 @@ const Hero3DVisual = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // ── Render Loop ──
+    // ── Animation Loop ──
     let animationFrameId;
     let clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-
       const elapsedTime = clock.getElapsedTime();
 
-      // Smooth camera / group rotation with dampening
+      // Gentle auto-rotation when not dragging
       if (!isDragging) {
-        targetX += 0.005; // Gentle constant float rotation
+        targetX += 0.0025;
       }
 
-      rootGroup.rotation.y += (targetX + mouseX - rootGroup.rotation.y) * 0.05;
-      rootGroup.rotation.x += (targetY - mouseY - rootGroup.rotation.x) * 0.05;
+      // Smooth damping interpolation
+      cartRoot.rotation.y += (targetX + mouseX - cartRoot.rotation.y) * 0.05;
+      cartRoot.rotation.x += (targetY - mouseY - cartRoot.rotation.x) * 0.05;
 
-      // Subtle breathing float on cart
-      cartGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.12;
+      // Realistic suspension floating motion
+      const floatY = Math.sin(elapsedTime * 1.8) * 0.06;
+      cartRoot.position.y = floatY;
+      shadowMesh.scale.setScalar(1 + floatY * 0.8);
 
-      // Orbit the gyro rings
-      ring1.rotation.z += 0.008;
-      ring2.rotation.x -= 0.006;
-      coreMesh.rotation.y += 0.015;
+      // Floating verified smart tag spinning and bobbing
+      badgeGroup.position.y = 0.9 + Math.sin(elapsedTime * 2.5) * 0.08;
+      badgeRing.rotation.y = elapsedTime * 1.5;
+      badgeGem.rotation.x = elapsedTime * 2.0;
 
-      // Ambient particle slow drift
-      particles.rotation.y = elapsedTime * 0.02;
+      // Subtle wheel idle micro-rotation
+      wheelMeshes.forEach((tire, idx) => {
+        tire.rotation.x = elapsedTime * (0.8 + idx * 0.1);
+      });
 
       renderer.render(scene, camera);
     };
@@ -267,22 +514,31 @@ const Hero3DVisual = () => {
         container.removeChild(renderer.domElement);
       }
 
-      // Dispose resources
-      wireGeo.dispose();
-      basketGeo.dispose();
+      // Dispose geometries & materials
+      topRimGeo.dispose();
+      topRimWire.dispose();
+      rimTubeGeo.dispose();
+      floorTubeGeo.dispose();
+      wireCylGeo.dispose();
+      sideWireGeo.dispose();
+      shadowGeo.dispose();
+      shadowTexture.dispose();
+      parcelBox.geometry.dispose();
+      phoneBody.geometry.dispose();
+      phoneScreen.geometry.dispose();
+      audioBox.geometry.dispose();
+      badgeRing.geometry.dispose();
+      badgeGem.geometry.dispose();
+
+      chromeMat.dispose();
       wireMat.dispose();
-      coreGeo.dispose();
-      coreMat.dispose();
-      wheelGeo.dispose();
-      wheelMat.dispose();
-      handleGeo.dispose();
-      handleMat.dispose();
-      ring1Geo.dispose();
-      ring1Mat.dispose();
-      ring2Geo.dispose();
-      ring2Mat.dispose();
-      particleGeo.dispose();
-      particleMat.dispose();
+      brandBlueMat.dispose();
+      rubberMat.dispose();
+      packageKraftMat.dispose();
+      packageTapeMat.dispose();
+      gadgetMat.dispose();
+      screenMat.dispose();
+      shadowMat.dispose();
       renderer.dispose();
     };
   }, []);
@@ -292,17 +548,23 @@ const Hero3DVisual = () => {
       <div 
         ref={containerRef} 
         className="w-full h-full cursor-grab active:cursor-grabbing"
-        title="Click and drag to rotate 3D centerpiece"
+        title="Click and drag to rotate the SmartCart 3D model 360°"
       />
       
-      {/* 3D Interaction Badge */}
+      {/* 3D Model Spec Badges */}
+      <div className="absolute top-3 right-3 pointer-events-none hidden sm:flex items-center gap-2">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/40 text-blue-400 border border-blue-500/20 backdrop-blur-xs">
+          SMARTCART · LOADED
+        </span>
+      </div>
+
       <div className="absolute bottom-3 right-3 pointer-events-none">
         <span className={`text-[10px] font-mono px-2 py-1 rounded-md border transition-colors ${
           isInteracting
             ? 'bg-blue-600/20 text-blue-400 border-blue-500/30'
-            : 'bg-black/40 text-white/40 border-white/10 backdrop-blur-xs'
+            : 'bg-black/50 text-white/50 border-white/10 backdrop-blur-xs'
         }`}>
-          {isInteracting ? 'ACTIVE ROTATION' : 'DRAG TO ROTATE 360°'}
+          {isInteracting ? 'ROTATING MODEL' : 'DRAG TO ROTATE 360°'}
         </span>
       </div>
     </div>
