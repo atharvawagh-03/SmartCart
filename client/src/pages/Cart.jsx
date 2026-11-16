@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/currency';
+import { DEFAULT_PRODUCT_IMAGE, handleImageError } from '../utils/imageFallback';
 import ThemeToggle from '../components/ThemeToggle';
 
 const Cart = () => {
@@ -96,10 +97,7 @@ const Cart = () => {
                           alt={name} 
                           referrerPolicy="no-referrer" 
                           className="w-full h-full object-contain p-2" 
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "https://placehold.co/400x400/f8fafc/64748b?text=Product";
-                          }}
+                          onError={handleImageError}
                         />
                       ) : (
                         <ShoppingBag className="w-6 h-6 text-white/20" />

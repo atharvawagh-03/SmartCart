@@ -89,13 +89,13 @@ const newProducts = [
   {
     name: "Biba Ethnic Anarkali Suit Set",
     price: 55.00, category: "Women's Clothing", stock: 80,
-    image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80",
     views: 340
   },
   {
     name: "W for Woman Printed Straight Kurta",
     price: 22.00, category: "Women's Clothing", stock: 160,
-    image: "https://images.unsplash.com/photo-1596285508507-5da817c3b8e0?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&q=80",
     views: 190
   },
   {
@@ -197,7 +197,7 @@ const newProducts = [
   {
     name: "Lakme 9 to 5 Weightless Matte Mousse Lip Color",
     price: 5.99, category: "Beauty & Makeup", stock: 400,
-    image: "https://images.unsplash.com/photo-1631214524020-3c69b8a535a4?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&q=80",
     views: 470
   },
   {
@@ -215,7 +215,7 @@ const newProducts = [
   {
     name: "Colorbar Cosmetics Perfect Mascara",
     price: 11.99, category: "Beauty & Makeup", stock: 220,
-    image: "https://images.unsplash.com/photo-1583241800698-e8ab01830a63?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80",
     views: 310
   },
   {

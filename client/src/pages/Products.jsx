@@ -6,6 +6,7 @@ import { ShoppingBag, Search, ShoppingCart, Check, Plus, ClipboardList, Heart, A
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/currency';
+import { DEFAULT_PRODUCT_IMAGE, handleImageError } from '../utils/imageFallback';
 import ThemeToggle from '../components/ThemeToggle';
 
 const Products = () => {
@@ -224,14 +225,11 @@ const Products = () => {
                 >
                   <div className="aspect-[4/3] overflow-hidden relative bg-slate-50 dark:bg-zinc-950 flex items-center justify-center border-b border-slate-100 dark:border-zinc-800/80">
                     <img 
-                      src={product.image || "https://placehold.co/600x400/f8fafc/64748b?text=Product"} 
+                      src={product.image || DEFAULT_PRODUCT_IMAGE} 
                       alt={product.name} 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-contain p-4 transition-transform duration-300 hover:scale-105"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://placehold.co/600x400/f8fafc/64748b?text=Image+Unavailable";
-                      }}
+                      onError={handleImageError}
                     />
                     
                     <div className="absolute top-2.5 left-2.5 z-10">

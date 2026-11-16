@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Trash2, ShoppingCart } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
+import { DEFAULT_PRODUCT_IMAGE, handleImageError } from '../utils/imageFallback';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { useState } from 'react';
@@ -88,13 +89,10 @@ const Wishlist = () => {
                 <div>
                   <div className="aspect-[4/3] bg-slate-50 dark:bg-zinc-950 border-b border-slate-100 dark:border-zinc-800/80 relative flex items-center justify-center">
                     <img 
-                      src={item.image || "https://placehold.co/600x400/f8fafc/64748b?text=Product"} 
+                      src={item.image || DEFAULT_PRODUCT_IMAGE} 
                       alt={item.name} 
                       className="w-full h-full object-contain p-4"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://placehold.co/600x400/f8fafc/64748b?text=Image+Unavailable";
-                      }}
+                      onError={handleImageError}
                     />
                     <button 
                       onClick={() => removeFromWishlist(item._id)}

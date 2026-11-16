@@ -142,7 +142,7 @@ const newProducts = [
     price: 1599,
     category: "Sports",
     stock: 200,
-    image: "https://images.unsplash.com/photo-1562183241-b937e9d94d73?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=80",
     views: 260,
   },
   {
@@ -332,7 +332,7 @@ const newProducts = [
     price: 2299,
     category: "Kids Clothing",
     stock: 120,
-    image: "https://images.unsplash.com/photo-1503944168849-8bf86875bebe?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80",
     views: 360,
   },
   {
@@ -356,7 +356,7 @@ const newProducts = [
     price: 1199,
     category: "Kids Clothing",
     stock: 160,
-    image: "https://images.unsplash.com/photo-1503944168849-8bf86875bebe?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80",
     views: 330,
   },
   {
@@ -388,7 +388,7 @@ const newProducts = [
     price: 2999,
     category: "Kids Clothing",
     stock: 90,
-    image: "https://images.unsplash.com/photo-1503944168849-8bf86875bebe?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80",
     views: 450,
   },
   {
@@ -436,7 +436,7 @@ const newProducts = [
     price: 1599,
     category: "Kids Clothing",
     stock: 150,
-    image: "https://images.unsplash.com/photo-1503944168849-8bf86875bebe?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80",
     views: 230,
   },
   {
@@ -460,7 +460,7 @@ const newProducts = [
     price: 2499,
     category: "Kids Clothing",
     stock: 95,
-    image: "https://images.unsplash.com/photo-1503944168849-8bf86875bebe?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&q=80",
     views: 340,
   },
 ];

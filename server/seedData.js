@@ -260,7 +260,7 @@ const products = [
   {
     name: "LG 27\" 4K UHD Monitor",
     price: 399.00, category: "Computers", stock: 40,
-    image: "https://images.unsplash.com/photo-1527443224154-c4a573d5f5ac?w=400&q=80",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80",
     views: 190
   },
 
