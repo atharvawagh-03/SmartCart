@@ -75,65 +75,79 @@ const Cart = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* ── Cart Items List ── */}
             <div className="lg:col-span-2 space-y-3">
-              {cart.items.map((item) => (
-                <div 
-                  key={item._id || item.product._id} 
-                  className="glass-panel p-4 rounded-xl flex items-center gap-4"
-                >
-                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-border flex-shrink-0 flex items-center justify-center">
-                    {item.product.image ? (
-                      <img 
-                        src={item.product.image} 
-                        alt={item.product.name} 
-                        referrerPolicy="no-referrer" 
-                        className="w-full h-full object-contain p-2" 
-                      />
-                    ) : (
-                      <ShoppingBag className="w-6 h-6 text-white/20" />
-                    )}
-                  </div>
-                  
-                  <div className="flex-grow min-w-0">
-                    <h3 className="text-sm font-medium text-white truncate">
-                      {item.product.name}
-                    </h3>
-                    <p className="text-xs text-white/50 mb-2">{item.product.category}</p>
-                    <p className="text-sm font-semibold text-white tabular-nums">
-                      {formatCurrency(item.product.price)}
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 shrink-0">
-                    <div className="flex items-center rounded-lg border border-border bg-surface">
-                      <button 
-                        onClick={() => updateQuantity(item.product._id, item.quantity - 1)}
-                        className="w-7 h-7 flex items-center justify-center text-white/70 hover:text-white transition-colors disabled:opacity-30"
-                        disabled={loading}
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="w-3.5 h-3.5" />
-                      </button>
-                      <span className="w-6 text-center text-xs font-medium tabular-nums">{item.quantity}</span>
-                      <button 
-                        onClick={() => updateQuantity(item.product._id, item.quantity + 1)}
-                        className="w-7 h-7 flex items-center justify-center text-white/70 hover:text-white transition-colors disabled:opacity-30"
-                        disabled={loading || item.quantity >= item.product.stock}
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                      </button>
+              {(cart.items || []).map((item, idx) => {
+                const product = item?.product || {};
+                const productId = product._id || item?._id || idx;
+                const name = product.name || 'Product';
+                const category = product.category || 'General';
+                const price = product.price || 0;
+                const image = product.image;
+                const stock = product.stock ?? 99;
+
+                return (
+                  <div 
+                    key={productId} 
+                    className="glass-panel p-4 rounded-xl flex items-center gap-4"
+                  >
+                    <div className="w-20 h-20 rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-border flex-shrink-0 flex items-center justify-center">
+                      {image ? (
+                        <img 
+                          src={image} 
+                          alt={name} 
+                          referrerPolicy="no-referrer" 
+                          className="w-full h-full object-contain p-2" 
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://placehold.co/400x400/f8fafc/64748b?text=Product";
+                          }}
+                        />
+                      ) : (
+                        <ShoppingBag className="w-6 h-6 text-white/20" />
+                      )}
                     </div>
                     
-                    <button 
-                      onClick={() => removeFromCart(item.product._id)}
-                      className="p-1.5 text-white/40 hover:text-rose-400 transition-colors"
-                      title="Remove Item"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex-grow min-w-0">
+                      <h3 className="text-sm font-medium text-white truncate">
+                        {name}
+                      </h3>
+                      <p className="text-xs text-white/50 mb-2">{category}</p>
+                      <p className="text-sm font-semibold text-white tabular-nums">
+                        {formatCurrency(price)}
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center rounded-lg border border-border bg-surface">
+                        <button 
+                          onClick={() => updateQuantity(productId, item.quantity - 1)}
+                          className="w-7 h-7 flex items-center justify-center text-white/70 hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
+                          disabled={loading}
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="w-6 text-center text-xs font-medium tabular-nums">{item.quantity}</span>
+                        <button 
+                          onClick={() => updateQuantity(productId, item.quantity + 1)}
+                          className="w-7 h-7 flex items-center justify-center text-white/70 hover:text-white transition-colors disabled:opacity-30 cursor-pointer"
+                          disabled={loading || item.quantity >= stock}
+                          aria-label="Increase quantity"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      
+                      <button 
+                        onClick={() => removeFromCart(productId)}
+                        className="p-1.5 text-white/40 hover:text-rose-400 transition-colors cursor-pointer"
+                        title="Remove Item"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* ── Order Summary ── */}

@@ -6,10 +6,11 @@ import { useAuth } from '../context/AuthContext';
 import { CheckCircle2, AlertCircle, ArrowLeft, Package, CreditCard, MapPin } from 'lucide-react';
 import { formatCurrency } from '../utils/currency';
 import AddressForm from '../components/AddressForm';
+import ThemeToggle from '../components/ThemeToggle';
 import { emptyAddress, addressFromProfile, validateAddressForm } from '../utils/address';
 
 const Checkout = () => {
-  const { cart, cartTotal, clearCart } = useCart();
+  const { cart, loading: cartLoading, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loadingAddress, setLoadingAddress] = useState(true);
@@ -20,7 +21,7 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const getAuthConfig = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || user?.token;
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
@@ -44,10 +45,11 @@ const Checkout = () => {
   }, [user?.name]);
 
   useEffect(() => {
+    if (cartLoading) return;
     if (!success && (!cart || !cart.items || cart.items.length === 0)) {
       navigate('/cart');
     }
-  }, [cart, navigate, success]);
+  }, [cart, cartLoading, navigate, success]);
 
   const placeOrder = async () => {
     const addressError = validateAddressForm(address);
@@ -59,13 +61,15 @@ const Checkout = () => {
     setLoading(true);
     setError(null);
     try {
-      const orderItems = cart.items.map((item) => ({
-        product: item.product._id,
-        name: item.product.name,
-        quantity: item.quantity,
-        price: item.product.price,
-        image: item.product.image,
-      }));
+      const orderItems = (cart?.items || [])
+        .filter((item) => item?.product)
+        .map((item) => ({
+          product: item.product._id || item.product,
+          name: item.product.name || 'Product',
+          quantity: item.quantity,
+          price: item.product.price || 0,
+          image: item.product.image || '',
+        }));
 
       await axios.post(
         '/api/orders',
@@ -86,6 +90,14 @@ const Checkout = () => {
       setLoading(false);
     }
   };
+
+  if (cartLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-border border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -135,6 +147,10 @@ const Checkout = () => {
               <span className="text-white/30 text-xs">/</span>
               <span className="text-xs font-medium text-white/60">Checkout</span>
             </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -191,17 +207,23 @@ const Checkout = () => {
                 </h2>
               </div>
               <div className="divide-y divide-border max-h-60 overflow-y-auto pr-1 custom-scrollbar">
-                {cart?.items?.map((item) => (
-                  <div key={item.product._id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
-                    <div className="min-w-0">
-                      <p className="font-medium text-white truncate">{item.product.name}</p>
-                      <p className="text-white/50">Qty: {item.quantity}</p>
+                {(cart?.items || []).map((item, idx) => {
+                  const product = item?.product || {};
+                  const productId = product._id || item?._id || idx;
+                  const name = product.name || 'Product';
+                  const price = product.price || 0;
+                  return (
+                    <div key={productId} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                      <div className="min-w-0">
+                        <p className="font-medium text-white truncate">{name}</p>
+                        <p className="text-white/50">Qty: {item.quantity}</p>
+                      </div>
+                      <span className="font-medium text-white tabular-nums shrink-0">
+                        {formatCurrency(price * item.quantity)}
+                      </span>
                     </div>
-                    <span className="font-medium text-white tabular-nums shrink-0">
-                      {formatCurrency(item.product.price * item.quantity)}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

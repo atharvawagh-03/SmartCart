@@ -78,11 +78,11 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const cartTotal = cart?.items?.reduce((acc, item) => {
-    return acc + (item.product?.price || 0) * item.quantity;
-  }, 0) || 0;
+  const cartTotal = (cart?.items || []).reduce((acc, item) => {
+    return acc + (item?.product?.price || 0) * (item?.quantity || 1);
+  }, 0);
 
-  const cartCount = cart?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+  const cartCount = (cart?.items || []).reduce((acc, item) => acc + (item?.quantity || 0), 0);
 
   return (
     <CartContext.Provider value={{ cart, loading, addToCart, updateQuantity, removeFromCart, clearCart, cartTotal, cartCount }}>

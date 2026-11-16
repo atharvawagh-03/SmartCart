@@ -9,6 +9,13 @@ const getCart = async (req, res, next) => {
 
     if (!cart) {
       cart = await Cart.create({ user: req.user._id, items: [] });
+    } else {
+      // Filter out any items where product was deleted
+      const originalCount = cart.items.length;
+      cart.items = cart.items.filter((item) => item && item.product);
+      if (cart.items.length !== originalCount) {
+        await cart.save();
+      }
     }
 
     res.json(cart);
@@ -44,6 +51,9 @@ const addToCart = async (req, res, next) => {
     
     // Return populated cart
     cart = await Cart.findById(cart._id).populate("items.product");
+    if (cart) {
+      cart.items = cart.items.filter((item) => item && item.product);
+    }
     res.status(201).json(cart);
   } catch (error) {
     next(error);
@@ -72,6 +82,9 @@ const updateCartItem = async (req, res, next) => {
       await cart.save();
       
       const updatedCart = await Cart.findById(cart._id).populate("items.product");
+      if (updatedCart) {
+        updatedCart.items = updatedCart.items.filter((item) => item && item.product);
+      }
       res.json(updatedCart);
     } else {
       res.status(404);
@@ -100,6 +113,9 @@ const removeFromCart = async (req, res, next) => {
     await cart.save();
 
     const updatedCart = await Cart.findById(cart._id).populate("items.product");
+    if (updatedCart) {
+      updatedCart.items = updatedCart.items.filter((item) => item && item.product);
+    }
     res.json(updatedCart);
   } catch (error) {
     next(error);

@@ -60,13 +60,19 @@ const createOrder = async (req, res, next) => {
 
     await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
 
-    const io = req.app.get("io");
-    io.to("adminRoom").emit("newOrder", {
-      orderId: createdOrder._id,
-      user: req.user.name,
-      totalPrice: createdOrder.totalPrice,
-      message: `New order received from ${req.user.name}`,
-    });
+    try {
+      const io = req.app.get("io");
+      if (io && io.to) {
+        io.to("adminRoom").emit("newOrder", {
+          orderId: createdOrder._id,
+          user: req.user.name,
+          totalPrice: createdOrder.totalPrice,
+          message: `New order received from ${req.user.name}`,
+        });
+      }
+    } catch (ioErr) {
+      console.warn("Failed to emit order notification:", ioErr.message);
+    }
 
     res.status(201).json(createdOrder);
   } catch (error) {

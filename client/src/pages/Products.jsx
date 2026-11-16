@@ -114,13 +114,15 @@ const Products = () => {
                 <span>Add Product</span>
               </Link>
             )}
-            <Link
-              to="/orders"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors"
-            >
-              <ClipboardList className="w-3.5 h-3.5" />
-              <span>Orders</span>
-            </Link>
+            {user && (
+              <Link
+                to="/orders"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors"
+              >
+                <ClipboardList className="w-3.5 h-3.5" />
+                <span>Orders</span>
+              </Link>
+            )}
             <Link 
               to="/cart" 
               className="relative p-2 text-white/70 hover:text-white transition-colors"

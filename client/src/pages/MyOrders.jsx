@@ -14,6 +14,7 @@ import {
   MapPin,
 } from 'lucide-react';
 import { useSocket } from '../context/SocketContext';
+import { useAuth } from '../context/AuthContext';
 import { formatCurrency } from '../utils/currency';
 import { formatAddressLines } from '../utils/address';
 import ThemeToggle from '../components/ThemeToggle';
@@ -90,15 +91,20 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+  const { user } = useAuth();
   const { socket } = useSocket();
 
   const fetchOrders = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || user?.token;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       const { data } = await axios.get('/api/orders/user', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
@@ -106,7 +112,7 @@ const MyOrders = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.token]);
 
   useEffect(() => {
     fetchOrders();
@@ -119,15 +125,25 @@ const MyOrders = () => {
     return () => socket.off('orderStatusUpdated', onStatusUpdate);
   }, [socket, fetchOrders]);
 
-  const formatOrderId = (id) => `#${String(id).slice(-8).toUpperCase()}`;
+  const formatOrderId = (id) => (id ? `#${String(id).slice(-8).toUpperCase()}` : '#--------');
 
-  const activeOrders = orders.filter((o) => o.status !== 'Delivered');
-  const pastOrders = orders.filter((o) => o.status === 'Delivered');
+  const safeOrders = Array.isArray(orders) ? orders : [];
+  const activeOrders = safeOrders.filter((o) => o?.status !== 'Delivered');
+  const pastOrders = safeOrders.filter((o) => o?.status === 'Delivered');
 
   const renderOrderCard = (order) => {
+    if (!order) return null;
     const statusConfig = getStatusConfig(order.status);
     const StatusIcon = statusConfig.icon;
     const isExpanded = expandedId === order._id;
+    const orderDate = order.createdAt
+      ? new Date(order.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+      : 'Recent';
+    const addressLines = formatAddressLines(order.shippingAddress) || [];
 
     return (
       <div
@@ -141,56 +157,55 @@ const MyOrders = () => {
             </div>
             <div>
               <p className="text-sm font-semibold text-white">Order {formatOrderId(order._id)}</p>
-              <p className="text-xs text-white/50">
-                {new Date(order.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </p>
+              <p className="text-xs text-white/50">{orderDate}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span
               className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color} ${statusConfig.borderColor} border`}
             >
-              {order.status}
+              {order.status || 'Pending'}
             </span>
-            <span className="text-sm font-semibold text-white tabular-nums">{formatCurrency(order.totalPrice)}</span>
+            <span className="text-sm font-semibold text-white tabular-nums">{formatCurrency(order.totalPrice || 0)}</span>
           </div>
         </div>
 
         <div className="border-t border-border pt-3">
           <div className="space-y-1.5">
-            {order.orderItems?.map((item, index) => (
-              <div key={index} className="flex items-center justify-between text-xs gap-4">
-                <span className="text-white/80 line-clamp-1">
-                  {item.name} × {item.quantity}
-                </span>
-                <span className="text-white/60 tabular-nums shrink-0">
-                  {formatCurrency((item.price || 0) * item.quantity)}
-                </span>
-              </div>
-            ))}
+            {(order.orderItems || []).map((item, index) => {
+              const itemName = item?.name || 'Product';
+              const itemQty = item?.quantity || 1;
+              const itemPrice = item?.price || 0;
+              return (
+                <div key={index} className="flex items-center justify-between text-xs gap-4">
+                  <span className="text-white/80 line-clamp-1">
+                    {itemName} × {itemQty}
+                  </span>
+                  <span className="text-white/60 tabular-nums shrink-0">
+                    {formatCurrency(itemPrice * itemQty)}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {isExpanded && (
           <>
-            {order.shippingAddress?.addressLine1 && (
+            {addressLines.length > 0 && (
               <div className="mt-4 pt-4 border-t border-border">
                 <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2 flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" />
                   Delivery address
                 </p>
                 <div className="text-xs text-white/70 space-y-0.5">
-                  {formatAddressLines(order.shippingAddress).map((line, i) => (
+                  {addressLines.map((line, i) => (
                     <p key={i}>{line}</p>
                   ))}
                 </div>
               </div>
             )}
-            <OrderTracker status={order.status} />
+            <OrderTracker status={order.status || 'Pending'} />
           </>
         )}
 
@@ -198,7 +213,7 @@ const MyOrders = () => {
           <button
             type="button"
             onClick={() => setExpandedId(isExpanded ? null : order._id)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover transition-colors text-white text-xs font-medium"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-hover transition-colors text-white text-xs font-medium cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5" />
             <span>{isExpanded ? 'Hide Details' : 'Track Order'}</span>
