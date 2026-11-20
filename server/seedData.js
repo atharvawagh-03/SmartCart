@@ -331,7 +331,7 @@ const seedDB = async () => {
 
     const inrProducts = products.map(p => ({
       ...p,
-      price: Math.round(p.price * 83)
+      price: Math.round(p.price >= 500 ? p.price : p.price * 83)
     }));
     await Product.insertMany(inrProducts);
     console.log(`✅ ${products.length} products added successfully!`);

@@ -1,30 +1,31 @@
-/** Convert USD to INR (approximate exchange rate) */
-const USD_TO_INR = 83.5;
+/**
+ * SmartCart stores all product prices natively in Indian Rupees (INR).
+ */
 
-/** Convert amount from USD to INR */
-export const convertToINR = (amountInUSD) => {
-  return (Number(amountInUSD) || 0) * USD_TO_INR;
-};
-
-/** Format amount in Indian Rupees (INR) */
+/** Format amount in Indian Rupees (INR) without decimals for clean display */
 export const formatCurrency = (amount) => {
-  const value = convertToINR(amount);
+  const value = Math.round(Number(amount) || 0);
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   }).format(value);
 };
 
-/** Compact format for charts (e.g. ₹1.2k) */
+/** Convert amount (noop since amounts are already in INR) */
+export const convertToINR = (amount) => {
+  return Math.round(Number(amount) || 0);
+};
+
+/** Compact format for charts (e.g. ₹1.2k, ₹1.5L) */
 export const formatCurrencyCompact = (amount) => {
-  const value = Number(amount) || 0;
+  const value = Math.round(Number(amount) || 0);
   if (value >= 100000) {
     return `₹${(value / 100000).toFixed(1)}L`;
   }
   if (value >= 1000) {
     return `₹${(value / 1000).toFixed(1)}k`;
   }
-  return `₹${value.toFixed(0)}`;
+  return `₹${value.toLocaleString('en-IN')}`;
 };
